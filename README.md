@@ -1,4 +1,6 @@
-#### On continuous development
+**On continuous development**
+
+#### Setup
 
 - Symlink to ~/:
 
