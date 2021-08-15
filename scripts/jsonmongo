@@ -1,0 +1,2 @@
+#!/bin/sh
+mongo localhost:27017/"$1" --quiet --eval "db.$2.find($3).toArray()" | sed -e 's/\(ISODate.\+\)"\(.\+\)")/"\1\2)"/g' -e 's/ObjectId(\(.\+\))/\1/g'

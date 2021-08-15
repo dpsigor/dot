@@ -1,0 +1,5 @@
+#!/bin/sh
+
+mainfolder=$(find -name main.go | head -1 | { read asdf; echo "${asdf%/*}"; })
+[ -z $mainfolder ] && echo "main.go not found" && return 1
+go build -o dist/ $mainfolder

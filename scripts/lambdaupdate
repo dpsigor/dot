@@ -1,0 +1,3 @@
+#!/bin/sh
+[ ! -n $1 -o ! -n $2 ] && echo "args: functioname zipfilename" && return 1
+aws lambda update-function-code --function-name $1 --zip-file fileb://$2

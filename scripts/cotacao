@@ -1,0 +1,4 @@
+#!/bin/bash
+[[ ! -n $MAIN_REPOS_PATH ]] && echo "MAIN_REPOS_PATH not set" && exit 1
+[[ ! -f $MAIN_REPOS_PATH/cotacao/cotacao ]] && echo "$MAIN_REPOS_PATH/cotacao/cotacao not found" && exit 1
+node $MAIN_REPOS_PATH/cotacao/cotacao $@

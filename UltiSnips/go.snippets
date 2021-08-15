@@ -1,0 +1,10 @@
+snippet hf "Handler Func"
+func ${1}(w http.ResponseWriter, r *http.Request) {
+	${2}
+}
+endsnippet
+
+snippet http "HandleFunc&ListenAndServe"
+http.HandleFunc("/", function)
+http.ListenAndServe(":8080", nil)
+endsnippet
