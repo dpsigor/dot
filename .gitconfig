@@ -1,0 +1,8 @@
+[user]
+	email = dpsigor@gmail.com
+	name = IGOR DE PAULA SILVA
+[alias]
+  st = status
+  ci = commit
+  br = branch
+  co = checkout
