@@ -7,6 +7,7 @@
     1. `.vimrc`
     1. `.vim_runtime`
     1. `.bashrc`
+    1. .gitconfig
 
 - Run PlugInstall on vim
 
