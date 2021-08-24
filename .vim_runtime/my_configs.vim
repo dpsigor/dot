@@ -2,6 +2,8 @@
 set number
 set visualbell
 
+set colorcolumn=160
+
 let &t_SI = "\<Esc>[6 q"
 let &t_EI = "\<Esc>[2 q"
 
@@ -165,6 +167,7 @@ let g:go_fmt_autosave = 1
 let g:go_fmt_command = "goimports"
 " Status line types/signatures
 let g:go_auto_type_info = 1
+let g:go_fmt_fail_silently = 1
 
 " Autocompletion
 inoremap <buffer> . .<C-x><C-o>
@@ -188,7 +191,6 @@ augroup gobindings
         \| nmap <leader>i !ipgojson<CR>
         \| nmap <leader>b :!godistbuild<CR>
         \| nnoremap <buffer> <silent> <leader>c :GoFillStruct<CR>
-        \| nnoremap <buffer> <silent> <leader>n ciw`json:"pA"`
 augroup end
 
 let g:go_play_browser_command = '/mnt/c/Program\ Files/Google/Chrome/Application/chrome.exe %URL% &'
