@@ -1,0 +1,24 @@
+priority -1
+
+snippet timeout "setTimeout function"
+setTimeout(() => {
+	${VISUAL}$0
+}, ${1:10});
+endsnippet
+
+
+snippet for "for (...) {...} (counting up)" b
+for (let ${1:i} = 0; $1 < ${2:Things.length}; $1++) {
+	${VISUAL}$0
+}
+endsnippet
+
+snippet iife "Immediately-Invoked Function Expression (iife)"
+(async () => {
+	${VISUAL}$0
+})();
+endsnippet
+
+snippet sleep "Sleep for x ms"
+await new Promise(r => setTimeout(() => r(), $1));
+endsnippet

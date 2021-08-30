@@ -1,0 +1,6 @@
+priority 0
+extends javascript
+
+snippet sleep "Sleep for x ms"
+await new Promise<void>(r => setTimeout(() => r(), $1));
+endsnippet

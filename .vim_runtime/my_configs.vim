@@ -74,63 +74,33 @@ endif
 
 syntax on
 filetype plugin indent on
-
-"   curl -fLo ~/.vim/autoload/plug.vim --create-dirs \
-"     https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
 "---------------------------- Plugins ----------------------------
-" if filereadable(expand("~.vim/autoload/plug.vim"))
-  call plug#begin('~/.vim/plugged')
-  Plug 'heavenshell/vim-jsdoc', {
-    \ 'for': ['javascript', 'javascript.jsx','typescript'],
-    \ 'do': 'make install'
-  \}
-  Plug 'dense-analysis/ale'
-  Plug 'junegunn/vim-easy-align'
-  Plug 'prettier/vim-prettier', {
-    \ 'do': 'yarn install',
-    \ 'for': ['javascript', 'typescript', 'css', 'less', 'scss', 'json', 'graphql', 'markdown', 'vue', 'yaml', 'html'] }
-  Plug 'fatih/vim-go', { 'do': ':GoUpdateBinaries' }
-  "------------------ Outros Plugs ---------------------------------
-  " Plug 'scrooloose/nerdtree'
-  Plug 'morhetz/gruvbox'
-  " Snippets
-  Plug 'SirVer/ultisnips'
-  " Obs: instalacao manual de git gutter em vim/pack/airblade/
-  " Fuzzy finder
-  Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
-  Plug 'junegunn/fzf.vim'
-  " Language Server
-  Plug 'prabirshrestha/async.vim'
-  Plug 'prabirshrestha/asyncomplete.vim'
-  Plug 'prabirshrestha/vim-lsp'
-  Plug 'mattn/vim-lsp-settings'
-  " Plug 'autozimu/LanguageClient-neovim', {
-  "     \ 'branch': 'next',
-  "     \ 'do': 'bash install.sh',
-  "     \ }
-  "" TypeScript
-  Plug 'HerringtonDarkholme/yats.vim'
-  " Plug 'runoshun/tscompletejob'
-  " Plug 'prabirshrestha/asyncomplete-tscompletejob.vim'
-  "" Docker
-  Plug 'ekalinin/Dockerfile.vim'
-  " ---------- pandoc -------------
-  Plug 'vim-pandoc/vim-pandoc'
-  Plug 'rwxrob/vim-pandoc-syntax-simple'
-  " ----------------- deoplete, para autocompletion -----------
-  " if has('nvim')
-  "   Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
-  " else
-  "   Plug 'Shougo/deoplete.nvim'
-  "   Plug 'roxma/nvim-yarp'
-  "   Plug 'roxma/vim-hug-neovim-rpc'
-  " endif
-  " ---------------- para netrw ------------------------------
-  Plug 'tpope/vim-vinegar'
-  call plug#end()
-" endif
-
-" let g:deoplete#enable_at_startup = 1
+call plug#begin('~/.vim/plugged')
+Plug 'heavenshell/vim-jsdoc', {
+  \ 'for': ['javascript', 'javascript.jsx','typescript'],
+  \ 'do': 'make install'
+\}
+Plug 'dense-analysis/ale'
+Plug 'junegunn/vim-easy-align'
+Plug 'prettier/vim-prettier', {
+  \ 'do': 'yarn install',
+  \ 'for': ['javascript', 'typescript', 'css', 'less', 'scss', 'json', 'graphql', 'markdown', 'vue', 'yaml', 'html'] }
+Plug 'fatih/vim-go', { 'do': ':GoUpdateBinaries' }
+Plug 'morhetz/gruvbox'
+Plug 'SirVer/ultisnips'
+Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
+Plug 'junegunn/fzf.vim'
+Plug 'prabirshrestha/async.vim'
+Plug 'prabirshrestha/asyncomplete.vim'
+Plug 'prabirshrestha/asyncomplete-lsp.vim'
+Plug 'prabirshrestha/vim-lsp'
+Plug 'mattn/vim-lsp-settings'
+Plug 'HerringtonDarkholme/yats.vim'
+Plug 'ekalinin/Dockerfile.vim'
+Plug 'vim-pandoc/vim-pandoc'
+Plug 'rwxrob/vim-pandoc-syntax-simple'
+Plug 'tpope/vim-vinegar'
+call plug#end()
 
 colorscheme gruvbox
 set cursorline
@@ -168,9 +138,6 @@ let g:go_fmt_command = "goimports"
 " Status line types/signatures
 let g:go_auto_type_info = 1
 let g:go_fmt_fail_silently = 1
-
-" Autocompletion
-inoremap <buffer> . .<C-x><C-o>
 
 let g:go_test_timeout="20s"
 " Run test on builtin terminal
@@ -215,7 +182,6 @@ let g:lsp_settings_root_markers = [
 \   '.git/',
 \ ]
 let g:lsp_document_code_action_signs_enabled = 1
-
 let g:lsp_use_lua = has('nvim-0.4.0') || (has('lua') && has('patch-8.2.0775'))
 
 if (executable('typescript-language-server'))
@@ -249,6 +215,7 @@ augroup tsbindings
         \  nnoremap <leader>r :w<CR><S-G>o<CR>:.!tscrun<CR> 
         \| nnoremap <leader>t :w<CR>:!tsc<CR> 
         \| nnoremap <leader>i <S-v>}:s/\n//<CR>!!json2ts<CR>:nohl<CR>
+        \| nnoremap <leader>f f(lca"url<S-o>const url = pA;const options = j<S-a>ca{optionsk$p%<S-a>;j<S-i>const res = await oconst data = await res.json();
         \| nnoremap <leader>f f(lca"url<S-o>const url = pA;const options = j<S-a>ca{optionsk$p%<S-a>;j<S-i>const res = await oconst data = await res.json();
 augroup end
 
@@ -302,19 +269,10 @@ nnoremap <leader>g :G<CR>
 
 " asyncomplete
 let g:asyncomplete_auto_popup = 1
+set completeopt=menuone,noinsert,noselect,preview
 
-" let g:asyncomplete_auto_completeopt = 0
-" set completeopt=menuone,noinsert,noselect,preview
-" autocmd! CompleteDone * if pumvisible() == 0 | pclose | endif
-
-inoremap <expr> <cr>    pumvisible() ? asyncomplete#close_popup() : "\<cr>"
-imap <c-space> <Plug>(asyncomplete_force_refresh)
-
-" call asyncomplete#register_source(asyncomplete#sources#tscompletejob#get_source_options({
-"     \ 'name': 'tscompletejob',
-"     \ 'allowlist': ['typescript'],
-"     \ 'completor': function('asyncomplete#sources#tscompletejob#completor'),
-"     \ }))
+inoremap <expr> <cr> pumvisible() ? asyncomplete#close_popup() : "\<cr>"
+inoremap <c-space> <Plug>(asyncomplete_force_refresh)
 
 " ALE
 let g:ale_disable_lsp = 1
