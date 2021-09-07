@@ -8,3 +8,28 @@ snippet http "HandleFunc&ListenAndServe"
 http.HandleFunc("/", function)
 http.ListenAndServe(":8080", nil)
 endsnippet
+
+snippet bounded "Launch bouded go routines"
+concurrency := 3
+ch := make(chan struct{}, concurrency)
+for i := 0; i < concurrency; i++ {
+	ch <- struct{}{}
+}
+done := make(chan bool)
+allDone := make(chan bool)
+go func() {
+	for i := 0; i < len(args); i++ {
+		<-done
+		ch <- struct{}{}
+	}
+	allDone <- true
+}()
+for i := 0; i < len(args); i++ {
+	<-ch
+	go func(x string) {
+		teste(x)
+		done <- true
+	}(args[i])
+}
+<-allDone
+endsnippet

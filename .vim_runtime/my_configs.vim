@@ -209,6 +209,12 @@ augroup lsp_install
   autocmd User lsp_buffer_enabled call s:on_lsp_buffer_enabled()
 augroup END
 
+function! NgSwitch()
+  let newextn = expand('%:e') == "ts" ? "html" : "ts"
+  let switchfile = expand('%:r') . "." . newextn
+  return switchfile
+endfunction
+
 augroup tsbindings
   au! tsbindings
   au FileType typescript
@@ -217,7 +223,9 @@ augroup tsbindings
         \| nnoremap <leader>i <S-v>}:s/\n//<CR>!!json2ts<CR>:nohl<CR>
         \| nnoremap <leader>f f(lca"url<S-o>const url = pA;const options = j<S-a>ca{optionsk$p%<S-a>;j<S-i>const res = await oconst data = await res.json();
         \| nnoremap <leader>f f(lca"url<S-o>const url = pA;const options = j<S-a>ca{optionsk$p%<S-a>;j<S-i>const res = await oconst data = await res.json();
+        \| nnoremap <silent> <leader>n :vs <C-R>=NgSwitch()<CR><CR>
 augroup end
+
 
 "-------------- Git Gutter --------------------------
 let g:gitgutter_enabled=1
