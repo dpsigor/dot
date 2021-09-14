@@ -33,3 +33,9 @@ for i := 0; i < len(args); i++ {
 }
 <-allDone
 endsnippet
+
+snippet errf "Format error msg"
+if err != nil {
+	return fmt.Errorf("error %w", err)
+}
+endsnippet

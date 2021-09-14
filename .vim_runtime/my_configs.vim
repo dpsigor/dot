@@ -139,7 +139,7 @@ let g:go_fmt_command = "goimports"
 let g:go_auto_type_info = 1
 let g:go_fmt_fail_silently = 1
 
-let g:go_test_timeout="20s"
+let g:go_test_timeout="60s"
 " Run test on builtin terminal
 let g:go_term_enabled = 1
 let g:go_term_reuse = 1
