@@ -11,13 +11,13 @@ set ttimeoutlen=1
 set listchars=tab:>-,trail:~,extends:>,precedes:<,space:.
 set ttyfast
 
-" Para subir e descer linhas, nos três modos. C-seta
-nmap <silent> <C-Down> :m .+1<CR>==
-nmap <silent> <C-Up> :m .-2<CR>==
-imap <silent> <C-Down> <Esc>:m .+1<CR>==gi
-imap <silent> <C-Up> <Esc>:m .-2<CR>==gi
-vmap <silent> <C-Down> :m '>+1<CR>gv=gv
-vmap <silent> <C-Up> :m '<-2<CR>gv=gv
+" Para subir e descer linhas, nos três modos
+nmap <silent> <C-j> :m .+1<CR>==
+nmap <silent> <C-k> :m .-2<CR>==
+imap <silent> <C-j> <Esc>:m .+1<CR>==gi
+imap <silent> <C-k> <Esc>:m .-2<CR>==gi
+vmap <silent> <C-j> :m '>+1<CR>gv=gv
+vmap <silent> <C-k> :m '<-2<CR>gv=gv
 
 " Para substituir a palavra sob o curso
 nnoremap <leader>s *<S-n>cgn
