@@ -80,7 +80,7 @@ Plug 'heavenshell/vim-jsdoc', {
   \ 'for': ['javascript', 'javascript.jsx','typescript'],
   \ 'do': 'make install'
 \}
-Plug 'dense-analysis/ale'
+" Plug 'dense-analysis/ale'
 Plug 'junegunn/vim-easy-align'
 Plug 'prettier/vim-prettier', {
   \ 'do': 'yarn install',
@@ -90,16 +90,12 @@ Plug 'morhetz/gruvbox'
 Plug 'SirVer/ultisnips'
 Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
 Plug 'junegunn/fzf.vim'
-Plug 'prabirshrestha/async.vim'
-Plug 'prabirshrestha/asyncomplete.vim'
-Plug 'prabirshrestha/asyncomplete-lsp.vim'
-Plug 'prabirshrestha/vim-lsp'
-Plug 'mattn/vim-lsp-settings'
 Plug 'HerringtonDarkholme/yats.vim'
 Plug 'ekalinin/Dockerfile.vim'
 Plug 'vim-pandoc/vim-pandoc'
 Plug 'rwxrob/vim-pandoc-syntax-simple'
 Plug 'tpope/vim-vinegar'
+Plug 'neoclide/coc.nvim', {'branch': 'release', 'for': ['json', 'typescript', 'html', 'go']}
 call plug#end()
 
 colorscheme gruvbox
@@ -109,7 +105,7 @@ set cursorlineopt=number
 highlight CursorLineNr ctermfg=Yellow ctermbg=0
 
 " Background transparente
-highlight Normal guibg=NONE ctermbg=NONE
+" highlight Normal guibg=NONE ctermbg=NONE
 
 " EasyAlign
 " Start interactive EasyAlign in visual mode (e.g. vipga)
@@ -122,6 +118,13 @@ set tabstop =2
 set softtabstop =2
 set shiftwidth =2
 set expandtab
+
+"----------------- COC ------------------
+
+nnoremap ]a l :call CocAction('diagnosticNext')<CR>
+nnoremap [a h :call CocAction('diagnosticPrevious')<CR>
+autocmd BufNew,BufEnter *.json,*.ts,*html,*go execute "silent! CocEnable"
+autocmd BufLeave *.json,*.ts,*html,*go execute "silent! CocDisable"
 
 "----------------- Go Lang settings ---------------------
 "“ Go syntax highlighting
@@ -139,13 +142,15 @@ let g:go_fmt_command = "goimports"
 let g:go_auto_type_info = 1
 let g:go_fmt_fail_silently = 1
 
-let g:go_test_timeout="60s"
+let g:go_test_timeout="180s"
 " Run test on builtin terminal
 let g:go_term_enabled = 1
 let g:go_term_reuse = 1
 let g:go_term_mode = "split"
 "LSP que deve encontrar definitions
 let g:go_def_mapping_enabled = 0
+"rather than the preview-window
+" let g:go_doc_popup_window = 1
 "Go Path
 let g:go_bin_path = $HOME."/go/bin"
 augroup gobindings
@@ -154,6 +159,7 @@ augroup gobindings
         \  nmap <buffer> <silent> <leader>dt <plug>(go-def-tab)
         \| nmap <buffer> <silent> <leader>r :w<CR><S-G>o<CR>/*<CR>*/<Esc><S-o>:.!if test -f go.mod; then { go run .; } else { go run main.go; } fi<CR>
         \| nmap <buffer> <silent> <leader>t <plug>(go-test-func)
+        \| nmap <silent> gd <plug>(go-def)
         \| nmap <buffer> <silent> <leader>tt <plug>(go-alternate-vertical)
         \| nmap <leader>i !ipgojson<CR>
         \| nmap <leader>b :!godistbuild<CR>
@@ -167,53 +173,18 @@ let g:UltiSnipsExpandTrigger="<tab>"
 let g:UltiSnipsJumpForwardTrigger="<c-b>"
 
 "-------------- TypeScript --------------------------
-
-let g:lsp_auto_enable = 1
-nmap <silent> K <Plug>(lsp-hover)
-nmap <silent> gr <plug>(lsp-references)
-nmap <silent> gd <plug>(lsp-definition)
-nmap <silent> [g <plug>(lsp-previous-diagnostic)
-nmap <silent> ]g <plug>(lsp-next-diagnostic)
-nnoremap <leader>l :LspCodeAction<CR>
-let g:lsp_diagnostics_float_cursor = 1
-let g:lsp_diagnostics_highlights_enabled = 1
-let g:lsp_settings_root_markers = [
-\   '.git',
-\   '.git/',
-\ ]
-let g:lsp_document_code_action_signs_enabled = 1
-let g:lsp_use_lua = has('nvim-0.4.0') || (has('lua') && has('patch-8.2.0775'))
-
-if (executable('typescript-language-server'))
-  au User lsp_setup call lsp#register_server({
-        \ 'name': 'typescript-language-server',
-        \ 'cmd': {server_info->['typescript-language-server --stdio']},
-        \ 'allowlist': ['javascript', 'typescript'],
-        \ })
+" --- COC ---
+let g:coc_global_extensions = ['coc-tsserver']
+" Remap keys for applying codeAction to the current line.
+nmap <leader>ac  <Plug>(coc-codeaction)
+" Apply AutoFix to problem on the current line.
+nmap <leader>qf  <Plug>(coc-fix-current)
+" Add CoC ESLint if ESLint is installed
+if isdirectory('./node_modules') && isdirectory('./node_modules/eslint')
+  let g:coc_global_extensions += ['coc-eslint']
 endif
-
-if executable('bash-language-server')
-  au User lsp_setup call lsp#register_server({
-        \ 'name': 'bash-language-server',
-        \ 'cmd': {server_info->[&shell, &shellcmdflag, 'bash-language-server start']},
-        \ 'allowlist': ['sh'],
-        \ })
-endif
-
-function! s:on_lsp_buffer_enabled() abort
-  setlocal omnifunc=lsp#complete
-endfunction
-
-augroup lsp_install
-  au!
-  autocmd User lsp_buffer_enabled call s:on_lsp_buffer_enabled()
-augroup END
-
-function! NgSwitch()
-  let newextn = expand('%:e') == "ts" ? "html" : "ts"
-  let switchfile = expand('%:r') . "." . newextn
-  return switchfile
-endfunction
+xmap <leader>f <Plug>(coc-format-selected)
+nmap <leader>f <Plug>(coc-format-selected)
 
 augroup tsbindings
   au! tsbindings
@@ -223,8 +194,22 @@ augroup tsbindings
         \| nnoremap <leader>i <S-v>}:s/\n//<CR>!!json2ts<CR>:nohl<CR>
         \| nnoremap <leader>f f(lca"url<S-o>const url = pA;const options = j<S-a>ca{optionsk$p%<S-a>;j<S-i>const res = await oconst data = await res.json();
         \| nnoremap <leader>f f(lca"url<S-o>const url = pA;const options = j<S-a>ca{optionsk$p%<S-a>;j<S-i>const res = await oconst data = await res.json();
-        \| nnoremap <silent> <leader>n :vs <C-R>=NgSwitch()<CR><CR>
+        \| nmap <silent> gd <Plug>(coc-definition)
+        \| nmap <silent> gy <Plug>(coc-type-definition)
+        \| nmap <silent> gi <Plug>(coc-implementation)
+        \| nmap <silent> gr <Plug>(coc-references)
+        \| nnoremap <silent> K :call <SID>show_documentation()<CR>
 augroup end
+
+function! s:show_documentation()
+  if (index(['vim','help'], &filetype) >= 0)
+    execute 'h '.expand('<cword>')
+  elseif (coc#rpc#ready())
+    call CocActionAsync('doHover')
+  else
+    execute '!' . &keywordprg . " " . expand('<cword>')
+  endif
+endfunction
 
 
 "-------------- Git Gutter --------------------------
@@ -265,41 +250,10 @@ set synmaxcol=200
 set redrawtime=10000
 syntax sync fromstart
 
-" Prettier
-" nnoremap <leader>f :Prettier<CR>
-let g:prettier#autoformat_config_present = 1
-
-" Atalho para cgn
-nnoremap c* *Ncgn
-
 " Atalho para Git Status
 nnoremap <leader>g :G<CR>
 
-" asyncomplete
-let g:asyncomplete_auto_popup = 1
 set completeopt=menuone,noinsert,noselect,preview
-
-inoremap <expr> <cr> pumvisible() ? asyncomplete#close_popup() : "\<cr>"
-inoremap <c-space> <Plug>(asyncomplete_force_refresh)
-
-" ALE
-let g:ale_disable_lsp = 1
-let g:ale_fixers = {
-\   '*': ['remove_trailing_lines', 'trim_whitespace'],
-\   'javascript': ['eslint'],
-\}
-let g:airline#extensions#ale#enabled = 1
-let g:ale_lint_on_text_changed = 'never'
-let g:ale_lint_on_insert_leave = 0
-let g:ale_lint_on_enter = 0
-let g:ale_sign_error = '❌'
-let g:ale_sign_info = '🤔'
-let g:ale_sign_style_error = '❌'
-let g:ale_sign_style_warning = '🤔'
-let g:ale_sign_warning = '🤔'
-let g:ale_completion_enabled = 0
-nnoremap ]a :ALENext<CR>
-nnoremap [a :ALEPrevious<CR>
 
 " if you are gonna visual, might as well...
 vmap < <gv
@@ -332,7 +286,7 @@ nnoremap s 0
 nnoremap ç $
 vnoremap s 0
 vnoremap ç $
-nnoremap <leader>a ggVG
+nnoremap <leader>aa ggVG
 " c/ — Show a count of search results.
 nnoremap <Leader>c/ :%s/<C-r>// /gn<CR>
 

@@ -22,3 +22,8 @@ endsnippet
 snippet sleep "Sleep for x ms"
 await new Promise(r => setTimeout(() => r(), $1));
 endsnippet
+
+snippet ctime "Console Time"
+console.time('$1');
+console.timeEnd('$1');
+endsnippet
