@@ -95,7 +95,7 @@ Plug 'ekalinin/Dockerfile.vim'
 Plug 'vim-pandoc/vim-pandoc'
 Plug 'rwxrob/vim-pandoc-syntax-simple'
 Plug 'tpope/vim-vinegar'
-Plug 'neoclide/coc.nvim', {'branch': 'release', 'for': ['json', 'typescript', 'html', 'go']}
+Plug 'neoclide/coc.nvim', {'branch': 'release'}
 call plug#end()
 
 colorscheme gruvbox
@@ -105,7 +105,7 @@ set cursorlineopt=number
 highlight CursorLineNr ctermfg=Yellow ctermbg=0
 
 " Background transparente
-" highlight Normal guibg=NONE ctermbg=NONE
+highlight Normal guibg=NONE ctermbg=NONE
 
 " EasyAlign
 " Start interactive EasyAlign in visual mode (e.g. vipga)
@@ -123,8 +123,9 @@ set expandtab
 
 nnoremap ]a l :call CocAction('diagnosticNext')<CR>
 nnoremap [a h :call CocAction('diagnosticPrevious')<CR>
-autocmd BufNew,BufEnter *.json,*.ts,*html,*go execute "silent! CocEnable"
-autocmd BufLeave *.json,*.ts,*html,*go execute "silent! CocDisable"
+" autocmd BufNew,BufEnter *.json,*.ts,*html,*go execute "silent! CocEnable"
+" autocmd BufLeave *.json,*.ts,*html,*go execute "silent! CocDisable"
+nnoremap <silent> <leader>k :let getHover=CocAction('getHover')<CR>:tabnew<CR>:put=getHover<CR>
 
 "----------------- Go Lang settings ---------------------
 "“ Go syntax highlighting
@@ -186,11 +187,18 @@ endif
 xmap <leader>f <Plug>(coc-format-selected)
 nmap <leader>f <Plug>(coc-format-selected)
 
+" Use <c-space> to trigger completion.
+if has('nvim')
+  inoremap <silent><expr> <c-space> coc#refresh()
+else
+  inoremap <silent><expr> <c-@> coc#refresh()
+endif
+
 augroup tsbindings
   au! tsbindings
   au FileType typescript
         \  nnoremap <leader>r :w<CR><S-G>o<CR>:.!tscrun<CR> 
-        \| nnoremap <leader>t :w<CR>:!tsc<CR> 
+        \| nnoremap <leader>t :call RunApiTest()<CR>
         \| nnoremap <leader>i <S-v>}:s/\n//<CR>!!json2ts<CR>:nohl<CR>
         \| nnoremap <leader>f f(lca"url<S-o>const url = pA;const options = j<S-a>ca{optionsk$p%<S-a>;j<S-i>const res = await oconst data = await res.json();
         \| nnoremap <leader>f f(lca"url<S-o>const url = pA;const options = j<S-a>ca{optionsk$p%<S-a>;j<S-i>const res = await oconst data = await res.json();
@@ -199,7 +207,13 @@ augroup tsbindings
         \| nmap <silent> gi <Plug>(coc-implementation)
         \| nmap <silent> gr <Plug>(coc-references)
         \| nnoremap <silent> K :call <SID>show_documentation()<CR>
+        \| inoremap <silent><expr> <cr> pumvisible() ? coc#_select_confirm() : "\<C-g>u\<CR>\<c-r>=coc#on_enter()\<CR>"
 augroup end
+
+function RunApiTest()
+  let pos = getcurpos()
+  execute '!' . "./testapi.bash" . " " . expand("%") . " " . pos[1]
+endfunction
 
 function! s:show_documentation()
   if (index(['vim','help'], &filetype) >= 0)
@@ -291,5 +305,12 @@ nnoremap <leader>aa ggVG
 nnoremap <Leader>c/ :%s/<C-r>// /gn<CR>
 
 au FileType javascript nnoremap <leader>r :w<CR><S-G>o<CR>:.!node index.js<CR> 
+
+au FileType sh nnoremap <leader>r :w<CR><S-G>o<CR>:call RunShell()<CR>
+
+function RunShell()
+  execute '.!' . expand("%:p")
+endfunction
+
 
 let g:pandoc#spell#enabled=0

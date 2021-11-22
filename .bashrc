@@ -114,6 +114,7 @@ export PATH=$PATH:/usr/local/go/bin
 export PATH=$PATH:~/.local/bin
 export PATH=$PATH:~/go/bin
 export PATH="/home/dpsigor/.ebcli-virtual-env/executables:$PATH"
+export PATH="/home/dpsigor/.node-v16.11.1-linux-x64/bin:$PATH"
 bind '"\t":menu-complete'
 
 # Para disable ctrl+s e ctrl+q padrao do terminal
@@ -127,3 +128,5 @@ export LESS_TERMCAP_se=$'\e[0m'
 export LESS_TERMCAP_so=$'\e[01;33m'
 export LESS_TERMCAP_ue=$'\e[0m'
 export LESS_TERMCAP_us=$'\e[1;4;31m'
+
+set -o vi
