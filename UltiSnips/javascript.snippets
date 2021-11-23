@@ -36,6 +36,26 @@ snippet jsonp "JSON parse"
 JSON.parse($0)
 endsnippet
 
-snippet alou "console.log(alou)"
-console.log('alou');
+snippet cv "console.log('v:', v)"
+console.log('$1', $1);
+endsnippet
+
+snippet pipeline "Pipeline boilerplate"
+const { pipeline, Transform } = require('stream');
+
+const source = process.stdin;
+const transf = new Transform({
+	transform(chunk, encoding, callback) {
+		callback(null, '---' + chunk.toString().trim() + '---\n');
+	}
+});
+const dest = process.stdout;
+const cb = e => { if (e) console.error(e); };
+
+pipeline(
+  source,
+  transf,
+  dest,
+  cb,
+);
 endsnippet
