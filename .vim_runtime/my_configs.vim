@@ -304,6 +304,9 @@ nnoremap <leader>aa ggVG
 " c/ — Show a count of search results.
 nnoremap <Leader>c/ :%s/<C-r>// /gn<CR>
 
+inoremap ,, A,
+inoremap ;; A;
+
 au FileType javascript nnoremap <leader>r :w<CR><S-G>o<CR>:.!node index.js<CR> 
 
 au FileType sh nnoremap <leader>r :w<CR><S-G>o<CR>:call RunShell()<CR>
@@ -311,6 +314,5 @@ au FileType sh nnoremap <leader>r :w<CR><S-G>o<CR>:call RunShell()<CR>
 function RunShell()
   execute '.!' . expand("%:p")
 endfunction
-
 
 let g:pandoc#spell#enabled=0
