@@ -322,3 +322,6 @@ nnoremap <leader>brg :args `rg -l `
 " Úteis após :args $@:
 " :argdo %s/pattern/word/gc
 " :bufdo :tabe<CR>
+
+" Paste replace visual selection without coyping it
+vnoremap p "_dP
