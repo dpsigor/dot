@@ -75,6 +75,11 @@ alias alert='notify-send --urgency=low -i "$([ $? = 0 ] && echo terminal || echo
 alias c=clear
 alias ?=duck
 alias top=htop
+alias dcu='docker compose up -d'
+alias dcd='docker compose down'
+alias g='git status'
+alias yd='yarn dev'
+alias yb='yarn build'
 
 if ! shopt -oq posix; then
   if [ -f /usr/share/bash-completion/bash_completion ]; then
