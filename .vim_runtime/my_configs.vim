@@ -317,4 +317,8 @@ endfunction
 
 let g:pandoc#spell#enabled=0
 
-nnoremap <leader>df :args `git diff origin/main --name-only`<CR>:bufdo :tabe<CR>:tabdo :Gvdiffsplit<CR>
+nnoremap <leader>df :args `git diff origin/main --name-only`<CR>:bufdo :tabe<CR>:tabdo :Gvdiffsplit<CR>:q<CR>:q<CR>
+nnoremap <leader>brg :args `rg -l `
+" Úteis após :args $@:
+" :argdo %s/pattern/word/gc
+" :bufdo :tabe<CR>
