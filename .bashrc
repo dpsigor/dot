@@ -79,6 +79,8 @@ alias dcu='docker compose up -d'
 alias dcd='docker compose down'
 alias g='git status'
 alias yd='yarn dev'
+alias ya='yarn start:api'
+alias ys='yarn start'
 alias yb='yarn build'
 
 if ! shopt -oq posix; then

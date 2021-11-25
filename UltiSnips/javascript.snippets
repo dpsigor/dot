@@ -40,6 +40,10 @@ snippet cv "console.log('v:', v)"
 console.log('$1', $1);
 endsnippet
 
+snippet cjs "console.log(JSON.stringify())"
+console.log(JSON.stringify('$1'));
+endsnippet
+
 snippet pipeline "Pipeline boilerplate"
 const { pipeline, Transform } = require('stream');
 

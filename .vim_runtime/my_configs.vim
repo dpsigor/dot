@@ -265,7 +265,7 @@ set redrawtime=10000
 syntax sync fromstart
 
 " Atalho para Git Status
-nnoremap <leader>g :G<CR>
+nnoremap <leader>g :G<CR><C-w>o
 
 set completeopt=menuone,noinsert,noselect,preview
 
