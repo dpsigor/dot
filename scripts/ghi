@@ -1,2 +1,2 @@
 #!/bin/sh
-gh issue list -s all -a @me
+gh issue list -a @me
