@@ -2,6 +2,8 @@
 set number
 set visualbell
 
+set fileformat=unix
+
 set colorcolumn=160
 
 let &t_SI = "\<Esc>[6 q"
