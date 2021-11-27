@@ -3,6 +3,7 @@ set number
 set visualbell
 
 set fileformat=unix
+set fileformats=unix
 
 set colorcolumn=160
 
@@ -319,7 +320,7 @@ endfunction
 
 let g:pandoc#spell#enabled=0
 
-nnoremap <leader>df :args `git diff origin/main --name-only`<CR>:bufdo :tabe<CR>:tabdo :Gvdiffsplit<CR>:q<CR>:q<CR>
+nnoremap <leader>df :args `git diff origin/main --name-only`<CR>:bufdo :tabe<CR>:tabdo :Gvdiffsplit origin/main<CR>:q<CR>:q<CR>
 nnoremap <leader>brg :args `rg -l `
 " Úteis após :args $@:
 " :argdo %s/pattern/word/gc
@@ -327,3 +328,10 @@ nnoremap <leader>brg :args `rg -l `
 
 " Paste replace visual selection without coyping it
 vnoremap p "_dP
+
+nnoremap <leader>fb :set ft=bash<CR>
+nnoremap <leader>fp :set ft=python<CR>
+nnoremap <leader>fjs :set ft=javascript<CR>
+nnoremap <leader>ft :set ft=typescript<CR>
+nnoremap <leader>fg :set ft=go<CR>
+nnoremap <leader>fjo :set ft=json<CR>
