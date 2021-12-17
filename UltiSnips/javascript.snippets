@@ -19,6 +19,26 @@ snippet iife "Immediately-Invoked Function Expression (iife)"
 })();
 endsnippet
 
+snippet e "Export keyword"
+export 
+endsnippet
+
+snippet f "Function"
+function $1($2) {$0};
+endsnippet
+
+snippet af "Anon Arrow Function"
+$1 => $2
+endsnippet
+
+snippet aaf "Anon Async Arrow Function"
+async $1 => $2
+endsnippet
+
+snippet afn "Named Arrow Function"
+const $1 = ($2) => $3;
+endsnippet
+
 snippet sleep "Sleep for x ms"
 await new Promise(r => setTimeout(() => r(), $1));
 endsnippet

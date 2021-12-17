@@ -99,6 +99,7 @@ Plug 'vim-pandoc/vim-pandoc'
 Plug 'rwxrob/vim-pandoc-syntax-simple'
 Plug 'tpope/vim-vinegar'
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
+Plug 'maxmellon/vim-jsx-pretty'
 call plug#end()
 
 colorscheme gruvbox
@@ -211,6 +212,7 @@ augroup tsbindings
         \| nmap <silent> gr <Plug>(coc-references)
         \| nnoremap <silent> K :call <SID>show_documentation()<CR>
         \| inoremap <silent><expr> <cr> pumvisible() ? coc#_select_confirm() : "\<C-g>u\<CR>\<c-r>=coc#on_enter()\<CR>"
+        \| nnoremap <leader>cs :call coc#rpc#stop()<CR>
 augroup end
 
 function RunApiTest()
@@ -310,9 +312,20 @@ nnoremap <Leader>c/ :%s/<C-r>// /gn<CR>
 inoremap ,, A,
 inoremap ;; A;
 
-au FileType javascript nnoremap <leader>r :w<CR><S-G>o<CR>:.!node index.js<CR> 
+augroup jsbindings
+  au! jsbindings
+  au FileType javascript 
+        \  nnoremap <leader>r :w<CR><S-G>o<CR>:.!node index.js<CR> 
+        \| nmap <silent> gd <Plug>(coc-definition)
+        \| nmap <silent> gy <Plug>(coc-type-definition)
+        \| nmap <silent> gi <Plug>(coc-implementation)
+        \| nmap <silent> gr <Plug>(coc-references)
+        \| nnoremap <silent> K :call <SID>show_documentation()<CR>
+        \| inoremap <silent><expr> <cr> pumvisible() ? coc#_select_confirm() : "\<C-g>u\<CR>\<c-r>=coc#on_enter()\<CR>"
+augroup end
 
 au FileType sh nnoremap <leader>r :w<CR><S-G>o<CR>:call RunShell()<CR>
+au FileType bash nnoremap <leader>r :w<CR><S-G>o<CR>:call RunShell()<CR>
 
 function RunShell()
   execute '.!' . expand("%:p")
@@ -335,3 +348,13 @@ nnoremap <leader>fjs :set ft=javascript<CR>
 nnoremap <leader>ft :set ft=typescript<CR>
 nnoremap <leader>fg :set ft=go<CR>
 nnoremap <leader>fjo :set ft=json<CR>
+
+nnoremap <leader>ht ^C<pA>yypa/O
+
+augroup cbindings
+  au! cbindings
+  au FileType c 
+        \  nnoremap <leader>m :w<CR>Go<CR>/*occ:.!make<CR>Go*/
+augroup end
+
+

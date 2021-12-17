@@ -103,15 +103,17 @@ export VISUAL=vim
 export PYTHONDONTWRITEBYTECODE=1
 export GOBIN=/usr/local/go/bin
 
-if [[ -d $SCRIPTS ]]; then
-  myscripts="$(ls $SCRIPTS)"
-  for myscript in $myscripts; do
-    if [ ! -f /usr/sbin/$myscript ]; then
-      sudo ln -s $SCRIPTS/$myscript  /usr/sbin/$myscript
-      echo "ln -s em /usr/sbin seu $myscript"
-    fi
-  done
-fi
+updateScripts() {
+  if [[ -d $SCRIPTS ]]; then
+    myscripts="$(ls $SCRIPTS)"
+    for myscript in $myscripts; do
+      if [ ! -f /usr/sbin/$myscript ]; then
+        sudo ln -s $SCRIPTS/$myscript  /usr/sbin/$myscript
+        echo "ln -s em /usr/sbin seu $myscript"
+      fi
+    done
+  fi
+}
 
 if [ -f ~/.config/.secrets/envsecrets ]; then
   . ~/.config/.secrets/envsecrets
