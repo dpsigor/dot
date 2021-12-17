@@ -48,6 +48,7 @@ set splitbelow splitright
 
 " Usar variável para abrir este rc com facilidade
 let $RC="$HOME/.vim_runtime/my_configs.vim"
+map <leader>e :e! ~/.vim_runtime/my_configs.vim<cr>
 
 set encoding=UTF-8
 set hidden
@@ -68,7 +69,7 @@ set shortmess+=c
 
 " Always show the signcolumn, otherwise it would shift the text each time
 " diagnostics appear/become resolved.
-if has("patch-8.1.1564")
+if has("nvim-0.5.0") || has("patch-8.1.1564")
   " Recently vim can merge signcolumn and number column into one
   set signcolumn=number
 else
@@ -79,18 +80,16 @@ syntax on
 filetype plugin indent on
 "---------------------------- Plugins ----------------------------
 call plug#begin('~/.vim/plugged')
-Plug 'heavenshell/vim-jsdoc', {
-  \ 'for': ['javascript', 'javascript.jsx','typescript'],
-  \ 'do': 'make install'
-\}
-" Plug 'dense-analysis/ale'
-Plug 'junegunn/vim-easy-align'
+Plug 'airblade/vim-gitgutter'
+Plug 'itchyny/lightline.vim'
+Plug 'jiangmiao/auto-pairs'
 Plug 'prettier/vim-prettier', {
   \ 'do': 'yarn install',
   \ 'for': ['javascript', 'typescript', 'css', 'less', 'scss', 'json', 'graphql', 'markdown', 'vue', 'yaml', 'html'] }
 Plug 'fatih/vim-go', { 'do': ':GoUpdateBinaries' }
 Plug 'morhetz/gruvbox'
 Plug 'SirVer/ultisnips'
+Plug 'junegunn/vim-easy-align'
 Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
 Plug 'junegunn/fzf.vim'
 Plug 'HerringtonDarkholme/yats.vim'
@@ -98,8 +97,11 @@ Plug 'ekalinin/Dockerfile.vim'
 Plug 'vim-pandoc/vim-pandoc'
 Plug 'rwxrob/vim-pandoc-syntax-simple'
 Plug 'tpope/vim-vinegar'
+Plug 'tpope/vim-commentary'
+Plug 'tpope/vim-fugitive'
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
 Plug 'maxmellon/vim-jsx-pretty'
+Plug 'github/copilot.vim'
 call plug#end()
 
 colorscheme gruvbox
@@ -210,7 +212,7 @@ augroup tsbindings
         \| nmap <silent> gy <Plug>(coc-type-definition)
         \| nmap <silent> gi <Plug>(coc-implementation)
         \| nmap <silent> gr <Plug>(coc-references)
-        \| nnoremap <silent> K :call <SID>show_documentation()<CR>
+        \| nnoremap <silent K :call <SID>show_documentation()<CR>
         \| inoremap <silent><expr> <cr> pumvisible() ? coc#_select_confirm() : "\<C-g>u\<CR>\<c-r>=coc#on_enter()\<CR>"
         \| nnoremap <leader>cs :call coc#rpc#stop()<CR>
 augroup end
@@ -246,14 +248,7 @@ map <C-f> <Esc><Esc>:GFiles!<CR>
 inoremap <C-f> <Esc><Esc>:BLines!<CR>
 map <C-g> <Esc><Esc>:BCommits!<CR>
 
-function! s:build_quickfix_list(lines)
-  call setqflist(map(copy(a:lines), '{ "filename": v:val }'))
-  copen
-  cc
-endfunction
-
 let g:fzf_action = {
-  \ 'ctrl-q': function('s:build_quickfix_list'),
   \ 'ctrl-t': 'tab split',
   \ 'ctrl-x': 'split',
   \ 'ctrl-v': 'vsplit' }
