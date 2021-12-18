@@ -49,7 +49,7 @@ function ps1_git_status {
   fi
 }
 
-__PS1_LOCATION='\[\e[39;43m\]\w '
+__PS1_LOCATION='\[\e[39;43m\]\W '
 __PS1_GIT_STATUS='$(ps1_git_status)'
 __PS1_GIT_BRANCH='$(git branch 2>/dev/null | grep \* | { read tmpv; echo " ${tmpv##* } "; })'
 __PS1_AFTER='\[\e[0m\] † '
@@ -124,6 +124,10 @@ cdp() {
     cd ..
   done
   OLDPWD=$TEMP_PWD
+}
+
+now() {
+  printf "\e[32m      \n"; date '+%H : %M : %S' | figlet -f banner; printf "\n\e[33m"; cal -A 1 -B 1; printf "\e[0m\n"
 }
 
 if [ -f ~/.config/.secrets/envsecrets ]; then
