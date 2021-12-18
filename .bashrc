@@ -49,9 +49,9 @@ function ps1_git_status {
   fi
 }
 
-__PS1_LOCATION='\[\e[39;43m\] \w '
+__PS1_LOCATION='\[\e[39;43m\]\w '
 __PS1_GIT_STATUS='$(ps1_git_status)'
-__PS1_GIT_BRANCH=' $(git branch 2>/dev/null | grep \* | { read tmpv; echo "${tmpv##* }"; }) '
+__PS1_GIT_BRANCH='$(git branch 2>/dev/null | grep \* | { read tmpv; echo " ${tmpv##* } "; })'
 __PS1_AFTER='\[\e[0m\] † '
 export PS1="${__PS1_LOCATION}\[${__PS1_GIT_STATUS}\]${__PS1_GIT_BRANCH}${__PS1_AFTER}"
 
@@ -69,6 +69,7 @@ fi
 alias ll='ls -alhF'
 alias la='ls -A'
 alias l='ls -CF'
+alias vim=vi
 
 alias alert='notify-send --urgency=low -i "$([ $? = 0 ] && echo terminal || echo error)" "$(history|tail -n1|sed -e '\''s/^\s*[0-9]\+\s*//;s/[;&|]\s*alert$//'\'')"'
 
@@ -82,6 +83,7 @@ alias yd='yarn dev'
 alias ya='yarn start:api'
 alias ys='yarn start'
 alias yb='yarn build'
+alias ascii='man ascii | grep -m 1 -A 88 --color=never Oct | grep -P -v "Tables|For|^\s*$"'
 
 if ! shopt -oq posix; then
   if [ -f /usr/share/bash-completion/bash_completion ]; then
@@ -113,6 +115,15 @@ updateScripts() {
       fi
     done
   fi
+}
+
+cdp() {
+  TEMP_PWD=`pwd`
+  while ! [[ -d .git ]]; do
+    [[ $HOME = `pwd` ]] && break
+    cd ..
+  done
+  OLDPWD=$TEMP_PWD
 }
 
 if [ -f ~/.config/.secrets/envsecrets ]; then
