@@ -40,20 +40,23 @@ if [ -n "$force_color_prompt" ]; then
 fi
 
 # --------------- prompt -------------------
-function ps1_git_status {
-  MODIFIED=$(git status -s 2> /dev/null | wc -l)
-  if [ $MODIFIED != 0 ]; then
-    echo -en "\e[1;33;44m"
-  else
-    echo -en "\e[39;44m"
-  fi
+__PS1_BUILD() {
+  local EXIT="$?"
+  PS1=""
+  local RCol='\[\e[0m\]'
+  local Red='\[\e[0;31m\]'
+  local Gre='\[\e[0;32m\]'
+  local Yel='\[\e[0;33m\]'
+  local Blu='\[\e[0;34m\]'
+  local __PS1_LOCATION="${Yel}\A${Blu}:${Gre}\w${RCol}"
+  local __PS1_GIT_STATUS=$([[ $(git status -s 2>/dev/null | wc -l) != 0 ]] && echo -en " \e[1;33;44m" || echo -en " \e[39;44m")
+  local __PS1_GIT_BRANCH=$(git branch 2>/dev/null | grep \* | { read tmpv; [[ -n $tmpv ]] && echo " ${tmpv##* } \e[0m" || echo "\e[0m"; })
+  local __PS1_AFTER="† "
+  PS1+="$__PS1_LOCATION$__PS1_GIT_STATUS$__PS1_GIT_BRANCH"
+  [[ $EXIT != 0 ]] && PS1+=" ${Red}$EXIT${RCol} " || :
+  PS1+="\n$__PS1_AFTER"
 }
-
-__PS1_LOCATION='\[\e[39;43m\]\W '
-__PS1_GIT_STATUS='$(ps1_git_status)'
-__PS1_GIT_BRANCH='$(git branch 2>/dev/null | grep \* | { read tmpv; echo " ${tmpv##* } "; })'
-__PS1_AFTER='\[\e[0m\] † '
-export PS1="${__PS1_LOCATION}\[${__PS1_GIT_STATUS}\]${__PS1_GIT_BRANCH}${__PS1_AFTER}"
+PROMPT_COMMAND=__PS1_BUILD
 
 unset color_prompt force_color_prompt
 
@@ -127,7 +130,7 @@ cdp() {
 }
 
 now() {
-  printf "\e[32m      \n"; date '+%H : %M : %S' | figlet -f banner; printf "\n\e[33m"; cal -A 1 -B 1; printf "\e[0m\n"
+  printf "\e[34m      \n"; date '+%H : %M : %S' | figlet -c; printf "\n\e[32m"; cal -A 1 -B 1; printf "\e[0m\n"
 }
 
 if [ -f ~/.config/.secrets/envsecrets ]; then

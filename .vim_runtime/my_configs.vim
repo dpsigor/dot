@@ -337,6 +337,7 @@ nnoremap <leader>brg :args `rg -l `
 " Paste replace visual selection without coyping it
 vnoremap p "_dP
 
+" Set filetypes
 nnoremap <leader>fb :set ft=bash<CR>
 nnoremap <leader>fp :set ft=python<CR>
 nnoremap <leader>fjs :set ft=javascript<CR>
@@ -344,6 +345,7 @@ nnoremap <leader>ft :set ft=typescript<CR>
 nnoremap <leader>fg :set ft=go<CR>
 nnoremap <leader>fjo :set ft=json<CR>
 
+" Turn word into <tag></tag>
 nnoremap <leader>ht ^C<pA>yypa/O
 
 augroup cbindings

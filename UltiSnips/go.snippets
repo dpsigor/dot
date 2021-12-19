@@ -39,3 +39,10 @@ if err != nil {
 	return fmt.Errorf("error %w", err)
 }
 endsnippet
+
+snippet err "log.Fatal"
+if err != nil {
+	log.Fatal(err)
+}
+
+endsnippet
