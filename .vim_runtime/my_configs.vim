@@ -101,7 +101,6 @@ Plug 'tpope/vim-commentary'
 Plug 'tpope/vim-fugitive'
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
 Plug 'maxmellon/vim-jsx-pretty'
-Plug 'github/copilot.vim'
 call plug#end()
 
 colorscheme gruvbox
@@ -321,6 +320,7 @@ augroup end
 
 au FileType sh nnoremap <leader>r :w<CR><S-G>o<CR>:call RunShell()<CR>
 au FileType bash nnoremap <leader>r :w<CR><S-G>o<CR>:call RunShell()<CR>
+au FileType python nnoremap <leader>r :w<CR><S-G>o<CR>!!python3 %<CR>
 
 function RunShell()
   execute '.!' . expand("%:p")

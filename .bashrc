@@ -51,10 +51,10 @@ __PS1_BUILD() {
   local __PS1_LOCATION="${Yel}\A${Blu}:${Gre}\w${RCol}"
   local __PS1_GIT_STATUS=$([[ $(git status -s 2>/dev/null | wc -l) != 0 ]] && echo -en " \e[1;33;44m" || echo -en " \e[39;44m")
   local __PS1_GIT_BRANCH=$(git branch 2>/dev/null | grep \* | { read tmpv; [[ -n $tmpv ]] && echo " ${tmpv##* } \e[0m" || echo "\e[0m"; })
-  local __PS1_AFTER="† "
+  local __PS1_AFTER="†"
   PS1+="$__PS1_LOCATION$__PS1_GIT_STATUS$__PS1_GIT_BRANCH"
   [[ $EXIT != 0 ]] && PS1+=" ${Red}$EXIT${RCol} " || :
-  PS1+="\n$__PS1_AFTER"
+  PS1+="\n${Yel}$__PS1_AFTER${RCol} "
 }
 PROMPT_COMMAND=__PS1_BUILD
 
@@ -79,6 +79,8 @@ alias alert='notify-send --urgency=low -i "$([ $? = 0 ] && echo terminal || echo
 alias c=clear
 alias ?=duck
 alias top=htop
+alias k=kubectl
+complete -F __start_kubectl k
 alias dcu='docker compose up -d'
 alias dcd='docker compose down'
 alias g='git status'
@@ -87,6 +89,8 @@ alias ya='yarn start:api'
 alias ys='yarn start'
 alias yb='yarn build'
 alias ascii='man ascii | grep -m 1 -A 88 --color=never Oct | grep -P -v "Tables|For|^\s*$"'
+alias lessf='less -F'
+alias prw='gh pr view -w'
 
 if ! shopt -oq posix; then
   if [ -f /usr/share/bash-completion/bash_completion ]; then

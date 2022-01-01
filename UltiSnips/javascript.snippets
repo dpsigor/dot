@@ -1,11 +1,24 @@
 priority -1
 
+snippet cl "console log"
+console.log($0);
+endsnippet
+
+snippet ce "console error"
+console.error($0);
+endsnippet
+
+snippet foro "for of"
+for (const $1 of $2) {
+	$0
+}
+endsnippet
+
 snippet timeout "setTimeout function"
 setTimeout(() => {
 	${VISUAL}$0
 }, ${1:10});
 endsnippet
-
 
 snippet for "for (...) {...} (counting up)" b
 for (let ${1:i} = 0; $1 < ${2:Things.length}; $1++) {
@@ -83,3 +96,18 @@ pipeline(
   cb,
 );
 endsnippet
+
+snippet as "async"
+async 
+endsnippet
+
+snippet aw "await"
+await 
+endsnippet
+
+snippet try "trycatch"
+try {$0
+} catch (e) {
+}
+endsnippet
+
