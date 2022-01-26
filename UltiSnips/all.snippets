@@ -7,5 +7,36 @@ curl -s \
   -XPOST \
   -H 'content-type: application/json' \
   -d '{}' \
-	$1
+  $1
+endsnippet
+
+snippet uuid "UUID" !b
+`!p import uuid
+if not snip.c:
+  snip.rv = uuid.uuid4().hex`
+endsnippet
+
+global !p
+def complete(t, opts):
+  if t:
+     opts = [ m[len(t):] for m in opts if m.startswith(t) ]
+  if len(opts) == 1:
+     return opts[0]
+  return "(" + '|'.join(opts) + ')'
+endglobal
+
+snippet status "Status" b
+status $1`!p snip.rv=complete(t[1], ['new', 'incomplete', 'invalid'])`
+endsnippet
+
+snippet "lorem(\d+)" "Repeat" r
+`!p
+lorem=('Lorem ipsum dolor sit amet, consectetur adipiscing elit,'
+' sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.'
+' Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris'
+' nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor'
+' in reprehenderit in voluptate velit esse cillum dolore eu fugiat'
+' nulla pariatur. Excepteur sint occaecat cupidatat non proident,'
+' sunt in culpa qui officia deserunt mollit anim id est laborum.')
+snip.rv = ' '.join(lorem.split()[:int(match.group(1))])`
 endsnippet

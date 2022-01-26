@@ -1,0 +1,51 @@
+#!/bin/bash
+
+autenticacao() {
+  data=$1
+  curl -s "https://arquivos.b3.com.br/api/download/requestname?fileName=InstrumentsConsolidated&date=$data&recaptchaToken=" \
+    -H 'authority: arquivos.b3.com.br' \
+    -H 'pragma: no-cache' \
+    -H 'cache-control: no-cache' \
+    -H 'sec-ch-ua: " Not A;Brand";v="99", "Chromium";v="96", "Google Chrome";v="96"' \
+    -H 'accept: application/json, text/plain, */*' \
+    -H 'sec-ch-ua-mobile: ?0' \
+    -H 'user-agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/96.0.4664.110 Safari/537.36' \
+    -H 'sec-ch-ua-platform: "Windows"' \
+    -H 'sec-fetch-site: same-origin' \
+    -H 'sec-fetch-mode: cors' \
+    -H 'sec-fetch-dest: empty' \
+    -H 'accept-language: pt-BR,pt;q=0.9,en;q=0.8,en-US;q=0.7,es;q=0.6,ja;q=0.5,la;q=0.4' \
+    --compressed
+}
+
+getArquivo() {
+  token=$1
+  curl -s "https://arquivos.b3.com.br/api/download/?token=$token" \
+    -H 'authority: arquivos.b3.com.br' \
+    -H 'pragma: no-cache' \
+    -H 'cache-control: no-cache' \
+    -H 'sec-ch-ua: " Not A;Brand";v="99", "Chromium";v="96", "Google Chrome";v="96"' \
+    -H 'accept: application/json, text/plain, */*' \
+    -H 'sec-ch-ua-mobile: ?0' \
+    -H 'user-agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/96.0.4664.110 Safari/537.36' \
+    -H 'sec-ch-ua-platform: "Windows"' \
+    -H 'sec-fetch-site: same-origin' \
+    -H 'sec-fetch-mode: cors' \
+    -H 'sec-fetch-dest: empty' \
+    -H 'accept-language: pt-BR,pt;q=0.9,en;q=0.8,en-US;q=0.7,es;q=0.6,ja;q=0.5,la;q=0.4' \
+    --compressed
+}
+
+if [[ -z "$1" ]]; then
+  echo "USAGE: ./getArquivo 2006-02-01"
+  exit 1
+fi
+echo "$1"
+authRes=$(autenticacao "$1")
+token=$(echo "$authRes" | jq .token | sed 's/"//g')
+if [[ "$token" = null ]]; then
+  echo -e "autenticação respondeu com\n$authRes"
+  echo "Argumento deve ser na forma 2006-02-01, com data em que o mercado funcionou"
+  exit 1
+fi
+getArquivo "$token" > "listados-$1.csv"

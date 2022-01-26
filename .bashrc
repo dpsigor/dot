@@ -77,6 +77,7 @@ alias vim=vi
 alias alert='notify-send --urgency=low -i "$([ $? = 0 ] && echo terminal || echo error)" "$(history|tail -n1|sed -e '\''s/^\s*[0-9]\+\s*//;s/[;&|]\s*alert$//'\'')"'
 
 alias c=clear
+alias b=batcat
 alias ?=duck
 alias top=htop
 alias k=kubectl
@@ -160,5 +161,6 @@ export LESS_TERMCAP_so=$'\e[01;33m'
 export LESS_TERMCAP_ue=$'\e[0m'
 export LESS_TERMCAP_us=$'\e[1;4;31m'
 export PAGER="less"
+# export MANPAGER="sh -c 'col -bx | batcat -l man -p'"
 
 set -o vi

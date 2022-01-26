@@ -8,6 +8,10 @@ snippet ce "console error"
 console.error($0);
 endsnippet
 
+snippet cer "console error"
+console.error('\x1b[31m', $0, '\x1b[0m');
+endsnippet
+
 snippet foro "for of"
 for (const $1 of $2) {
 	$0
@@ -61,7 +65,7 @@ console.time('$1');
 console.timeEnd('$1');
 endsnippet
 
-snippet jsons "JSON stringify"
+snippet jsons "JSON stringify" i
 JSON.stringify($0)
 endsnippet
 
@@ -111,3 +115,6 @@ try {$0
 }
 endsnippet
 
+snippet imrds "readdirSync"
+import { readdirSync } from 'fs';$0
+endsnippet

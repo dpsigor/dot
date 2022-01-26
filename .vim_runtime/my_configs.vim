@@ -99,8 +99,14 @@ Plug 'rwxrob/vim-pandoc-syntax-simple'
 Plug 'tpope/vim-vinegar'
 Plug 'tpope/vim-commentary'
 Plug 'tpope/vim-fugitive'
-Plug 'neoclide/coc.nvim', {'branch': 'release'}
+" Plug 'neoclide/coc.nvim', {'branch': 'release'}
+Plug 'prabirshrestha/async.vim'
+Plug 'prabirshrestha/vim-lsp'
+Plug 'mattn/vim-lsp-settings'
+Plug 'prabirshrestha/asyncomplete.vim'
+Plug 'prabirshrestha/asyncomplete-lsp.vim'
 Plug 'maxmellon/vim-jsx-pretty'
+Plug 'pangloss/vim-javascript'
 call plug#end()
 
 colorscheme gruvbox
@@ -126,11 +132,51 @@ set expandtab
 
 "----------------- COC ------------------
 
-nnoremap ]a l :call CocAction('diagnosticNext')<CR>
-nnoremap [a h :call CocAction('diagnosticPrevious')<CR>
-" autocmd BufNew,BufEnter *.json,*.ts,*html,*go execute "silent! CocEnable"
-" autocmd BufLeave *.json,*.ts,*html,*go execute "silent! CocDisable"
-nnoremap <silent> <leader>k :let getHover=CocAction('getHover')<CR>:tabnew<CR>:put=getHover<CR>
+" nnoremap ]a l :call CocAction('diagnosticNext')<CR>
+" nnoremap [a h :call CocAction('diagnosticPrevious')<CR>
+" " autocmd BufNew,BufEnter *.json,*.ts,*html,*go execute "silent! CocEnable"
+" " autocmd BufLeave *.json,*.ts,*html,*go execute "silent! CocDisable"
+" nnoremap <silent> <leader>k :let getHover=CocAction('getHover')<CR>:tabnew<CR>:put=getHover<CR>
+
+"----------------- LSP ------------------
+
+if executable('pyls')
+    " pip install python-language-server
+    au User lsp_setup call lsp#register_server({
+        \ 'name': 'pyls',
+        \ 'cmd': {server_info->['pyls']},
+        \ 'allowlist': ['python'],
+        \ })
+endif
+
+function! s:on_lsp_buffer_enabled() abort
+    setlocal omnifunc=lsp#complete
+    if exists('+tagfunc') | setlocal tagfunc=lsp#tagfunc | endif
+    nmap <buffer> gd <plug>(lsp-definition)
+    nmap <buffer> gs <plug>(lsp-document-symbol-search)
+    nmap <buffer> gS <plug>(lsp-workspace-symbol-search)
+    nmap <buffer> gr <plug>(lsp-references)
+    nmap <buffer> gi <plug>(lsp-implementation)
+    " nmap <buffer> gt <plug>(lsp-type-definition)
+    nmap <buffer> <leader>rn <plug>(lsp-rename)
+    nmap <buffer> [a <plug>(lsp-previous-diagnostic)
+    nmap <buffer> ]a <plug>(lsp-next-diagnostic)
+    nmap <buffer> K <plug>(lsp-hover)
+    nmap <buffer> <leader>k <plug>(lsp-document-diagnostics)
+    nmap <buffer> <leader>ca <plug>(lsp-code-action)
+    " For Vim 8 (<c-@> corresponds to <c-space>):
+    let g:lsp_format_sync_timeout = 1000
+    let g:lsp_document_code_action_signs_enabled = 0
+    let g:lsp_hover_ui = 'preview'
+    " autocmd! BufWritePre *.rs,*.go call execute('LspDocumentFormatSync')
+endfunction
+imap <c-@> <Plug>(asyncomplete_force_refresh)
+
+augroup lsp_install
+    au!
+    " call s:on_lsp_buffer_enabled only for languages that has the server registered.
+    autocmd User lsp_buffer_enabled call s:on_lsp_buffer_enabled()
+augroup END
 
 "----------------- Go Lang settings ---------------------
 "“ Go syntax highlighting
@@ -179,25 +225,25 @@ let g:UltiSnipsExpandTrigger="<tab>"
 let g:UltiSnipsJumpForwardTrigger="<c-b>"
 
 "-------------- TypeScript --------------------------
-" --- COC ---
-let g:coc_global_extensions = ['coc-tsserver']
-" Remap keys for applying codeAction to the current line.
-nmap <leader>ac  <Plug>(coc-codeaction)
-" Apply AutoFix to problem on the current line.
-nmap <leader>qf  <Plug>(coc-fix-current)
-" Add CoC ESLint if ESLint is installed
-if isdirectory('./node_modules') && isdirectory('./node_modules/eslint')
-  let g:coc_global_extensions += ['coc-eslint']
-endif
-xmap <leader>f <Plug>(coc-format-selected)
-nmap <leader>f <Plug>(coc-format-selected)
 
-" Use <c-space> to trigger completion.
-if has('nvim')
-  inoremap <silent><expr> <c-space> coc#refresh()
-else
-  inoremap <silent><expr> <c-@> coc#refresh()
-endif
+" " --- COC ---
+" let g:coc_global_extensions = ['coc-tsserver']
+" " Remap keys for applying codeAction to the current line.
+" nmap <leader>ac  <Plug>(coc-codeaction)
+" " Apply AutoFix to problem on the current line.
+" nmap <leader>qf  <Plug>(coc-fix-current)
+" " Add CoC ESLint if ESLint is installed
+" if isdirectory('./node_modules') && isdirectory('./node_modules/eslint')
+"   let g:coc_global_extensions += ['coc-eslint']
+" endif
+" xmap <leader>f <Plug>(coc-format-selected)
+" nmap <leader>f <Plug>(coc-format-selected)
+" " Use <c-space> to trigger completion.
+" if has('nvim')
+"   inoremap <silent><expr> <c-space> coc#refresh()
+" else
+"   inoremap <silent><expr> <c-@> coc#refresh()
+" endif
 
 augroup tsbindings
   au! tsbindings
@@ -207,29 +253,30 @@ augroup tsbindings
         \| nnoremap <leader>i <S-v>}:s/\n//<CR>!!json2ts<CR>:nohl<CR>
         \| nnoremap <leader>f f(lca"url<S-o>const url = pA;const options = j<S-a>ca{optionsk$p%<S-a>;j<S-i>const res = await oconst data = await res.json();
         \| nnoremap <leader>f f(lca"url<S-o>const url = pA;const options = j<S-a>ca{optionsk$p%<S-a>;j<S-i>const res = await oconst data = await res.json();
-        \| nmap <silent> gd <Plug>(coc-definition)
-        \| nmap <silent> gy <Plug>(coc-type-definition)
-        \| nmap <silent> gi <Plug>(coc-implementation)
-        \| nmap <silent> gr <Plug>(coc-references)
-        \| nnoremap <silent K :call <SID>show_documentation()<CR>
-        \| inoremap <silent><expr> <cr> pumvisible() ? coc#_select_confirm() : "\<C-g>u\<CR>\<c-r>=coc#on_enter()\<CR>"
-        \| nnoremap <leader>cs :call coc#rpc#stop()<CR>
 augroup end
+
+        " \| nmap <silent> gd <Plug>(coc-definition)
+        " \| nmap <silent> gy <Plug>(coc-type-definition)
+        " \| nmap <silent> gi <Plug>(coc-implementation)
+        " \| nmap <silent> gr <Plug>(coc-references)
+        " \| nnoremap <silent K :call <SID>show_documentation()<CR>
+        " \| inoremap <silent><expr> <cr> pumvisible() ? coc#_select_confirm() : "\<C-g>u\<CR>\<c-r>=coc#on_enter()\<CR>"
+        " \| nnoremap <leader>cs :call coc#rpc#stop()<CR>
 
 function RunApiTest()
   let pos = getcurpos()
   execute '!' . "./testapi.bash" . " " . expand("%") . " " . pos[1]
 endfunction
 
-function! s:show_documentation()
-  if (index(['vim','help'], &filetype) >= 0)
-    execute 'h '.expand('<cword>')
-  elseif (coc#rpc#ready())
-    call CocActionAsync('doHover')
-  else
-    execute '!' . &keywordprg . " " . expand('<cword>')
-  endif
-endfunction
+" function! s:show_documentation()
+"   if (index(['vim','help'], &filetype) >= 0)
+"     execute 'h '.expand('<cword>')
+"   elseif (coc#rpc#ready())
+"     call CocActionAsync('doHover')
+"   else
+"     execute '!' . &keywordprg . " " . expand('<cword>')
+"   endif
+" endfunction
 
 
 "-------------- Git Gutter --------------------------
@@ -310,17 +357,18 @@ augroup jsbindings
   au! jsbindings
   au FileType javascript 
         \  nnoremap <leader>r :w<CR><S-G>o<CR>:.!node index.js<CR> 
-        \| nmap <silent> gd <Plug>(coc-definition)
-        \| nmap <silent> gy <Plug>(coc-type-definition)
-        \| nmap <silent> gi <Plug>(coc-implementation)
-        \| nmap <silent> gr <Plug>(coc-references)
-        \| nnoremap <silent> K :call <SID>show_documentation()<CR>
-        \| inoremap <silent><expr> <cr> pumvisible() ? coc#_select_confirm() : "\<C-g>u\<CR>\<c-r>=coc#on_enter()\<CR>"
 augroup end
+
+        " \| nmap <silent> gd <Plug>(coc-definition)
+        " \| nmap <silent> gy <Plug>(coc-type-definition)
+        " \| nmap <silent> gi <Plug>(coc-implementation)
+        " \| nmap <silent> gr <Plug>(coc-references)
+        " \| nnoremap <silent> K :call <SID>show_documentation()<CR>
+        " \| inoremap <silent><expr> <cr> pumvisible() ? coc#_select_confirm() : "\<C-g>u\<CR>\<c-r>=coc#on_enter()\<CR>"
 
 au FileType sh nnoremap <leader>r :w<CR><S-G>o<CR>:call RunShell()<CR>
 au FileType bash nnoremap <leader>r :w<CR><S-G>o<CR>:call RunShell()<CR>
-au FileType python nnoremap <leader>r :w<CR><S-G>o<CR>!!python3 %<CR>
+au FileType python nnoremap <leader>r :w<CR><S-G>o<CR>"""o"""O!!python3 %<CR>
 
 function RunShell()
   execute '.!' . expand("%:p")
