@@ -19,12 +19,5 @@ let g:lightline = {
       \   'fugitive': '(exists("*FugitiveHead") && ""!=FugitiveHead())'
       \ },
       \ 'separator': { 'left': ' ', 'right': ' ' },
-      \ 'subseparator': { 'left': ' ', 'right': ' ' },
-      \ 'component_function': { 'gitst': 'GitStatus' }
+      \ 'subseparator': { 'left': ' ', 'right': ' ' }
       \ }
-
-function! GitStatus()
-  let [a,m,r] = GitGutterGetHunkSummary()
-  return printf('+%d ~%d -%d', a, m, r)
-endfunction
-set statusline+=%{GitStatus()}

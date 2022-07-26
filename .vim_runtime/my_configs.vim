@@ -185,8 +185,6 @@ let g:go_highlight_functions = 1
 let g:go_highlight_function_calls = 1
 let g:go_highlight_extra_types = 1
 let g:go_highlight_operators = 1
-" let g:go_diagnostics_level = 2
-" let g:go_highlight_diagnostic_errors = 1
 " Auto formatting and importing
 let g:go_fmt_autosave = 1
 let g:go_fmt_command = "goimports"
@@ -226,25 +224,6 @@ let g:UltiSnipsJumpForwardTrigger="<c-b>"
 
 "-------------- TypeScript --------------------------
 
-" " --- COC ---
-" let g:coc_global_extensions = ['coc-tsserver']
-" " Remap keys for applying codeAction to the current line.
-" nmap <leader>ac  <Plug>(coc-codeaction)
-" " Apply AutoFix to problem on the current line.
-" nmap <leader>qf  <Plug>(coc-fix-current)
-" " Add CoC ESLint if ESLint is installed
-" if isdirectory('./node_modules') && isdirectory('./node_modules/eslint')
-"   let g:coc_global_extensions += ['coc-eslint']
-" endif
-" xmap <leader>f <Plug>(coc-format-selected)
-" nmap <leader>f <Plug>(coc-format-selected)
-" " Use <c-space> to trigger completion.
-" if has('nvim')
-"   inoremap <silent><expr> <c-space> coc#refresh()
-" else
-"   inoremap <silent><expr> <c-@> coc#refresh()
-" endif
-
 augroup tsbindings
   au! tsbindings
   au FileType typescript
@@ -255,29 +234,10 @@ augroup tsbindings
         \| nnoremap <leader>f f(lca"url<S-o>const url = pA;const options = j<S-a>ca{optionsk$p%<S-a>;j<S-i>const res = await oconst data = await res.json();
 augroup end
 
-        " \| nmap <silent> gd <Plug>(coc-definition)
-        " \| nmap <silent> gy <Plug>(coc-type-definition)
-        " \| nmap <silent> gi <Plug>(coc-implementation)
-        " \| nmap <silent> gr <Plug>(coc-references)
-        " \| nnoremap <silent K :call <SID>show_documentation()<CR>
-        " \| inoremap <silent><expr> <cr> pumvisible() ? coc#_select_confirm() : "\<C-g>u\<CR>\<c-r>=coc#on_enter()\<CR>"
-        " \| nnoremap <leader>cs :call coc#rpc#stop()<CR>
-
 function RunApiTest()
   let pos = getcurpos()
   execute '!' . "./testapi.bash" . " " . expand("%") . " " . pos[1]
 endfunction
-
-" function! s:show_documentation()
-"   if (index(['vim','help'], &filetype) >= 0)
-"     execute 'h '.expand('<cword>')
-"   elseif (coc#rpc#ready())
-"     call CocActionAsync('doHover')
-"   else
-"     execute '!' . &keywordprg . " " . expand('<cword>')
-"   endif
-" endfunction
-
 
 "-------------- Git Gutter --------------------------
 let g:gitgutter_enabled=1
@@ -322,9 +282,6 @@ vmap > >gv
 " make Y consitent with D and C (yank til end)
 map Y y$
 
-" better command-line completion
-set wildmenu
-
 " " sh macros
 " au FileType sh let @w = 'ciw${p'
 
@@ -359,13 +316,6 @@ augroup jsbindings
         \  nnoremap <leader>r :w<CR><S-G>o<CR>:.!node index.js<CR> 
 augroup end
 
-        " \| nmap <silent> gd <Plug>(coc-definition)
-        " \| nmap <silent> gy <Plug>(coc-type-definition)
-        " \| nmap <silent> gi <Plug>(coc-implementation)
-        " \| nmap <silent> gr <Plug>(coc-references)
-        " \| nnoremap <silent> K :call <SID>show_documentation()<CR>
-        " \| inoremap <silent><expr> <cr> pumvisible() ? coc#_select_confirm() : "\<C-g>u\<CR>\<c-r>=coc#on_enter()\<CR>"
-
 au FileType sh nnoremap <leader>r :w<CR><S-G>o<CR>:call RunShell()<CR>
 au FileType bash nnoremap <leader>r :w<CR><S-G>o<CR>:call RunShell()<CR>
 au FileType python nnoremap <leader>r :w<CR><S-G>o<CR>"""o"""O!!python3 %<CR>
@@ -375,12 +325,6 @@ function RunShell()
 endfunction
 
 let g:pandoc#spell#enabled=0
-
-nnoremap <leader>df :args `git diff origin/main --name-only`<CR>:bufdo :tabe<CR>:tabdo :Gvdiffsplit origin/main<CR>:q<CR>:q<CR>
-nnoremap <leader>brg :args `rg -l `
-" Úteis após :args $@:
-" :argdo %s/pattern/word/gc
-" :bufdo :tabe<CR>
 
 " Paste replace visual selection without coyping it
 vnoremap p "_dP
@@ -392,14 +336,4 @@ nnoremap <leader>fjs :set ft=javascript<CR>
 nnoremap <leader>ft :set ft=typescript<CR>
 nnoremap <leader>fg :set ft=go<CR>
 nnoremap <leader>fjo :set ft=json<CR>
-
-" Turn word into <tag></tag>
-nnoremap <leader>ht ^C<pA>yypa/O
-
-augroup cbindings
-  au! cbindings
-  au FileType c 
-        \  nnoremap <leader>m :w<CR>Go<CR>/*occ:.!make<CR>Go*/
-augroup end
-
 
