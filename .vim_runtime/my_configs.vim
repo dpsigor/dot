@@ -162,7 +162,7 @@ function! s:on_lsp_buffer_enabled() abort
     nmap <buffer> [a <plug>(lsp-previous-diagnostic)
     nmap <buffer> ]a <plug>(lsp-next-diagnostic)
     nmap <buffer> K <plug>(lsp-hover)
-    nmap <buffer> <leader>k <plug>(lsp-document-diagnostics)
+    nmap <buffer> <leader>d <plug>(lsp-document-diagnostics)
     nmap <buffer> <leader>ca <plug>(lsp-code-action)
     " For Vim 8 (<c-@> corresponds to <c-space>):
     let g:lsp_format_sync_timeout = 1000
@@ -221,6 +221,8 @@ let g:go_play_browser_command = '/mnt/c/Program\ Files/Google/Chrome/Application
 "-------------- Snippets -----------------------------
 let g:UltiSnipsExpandTrigger="<tab>"
 let g:UltiSnipsJumpForwardTrigger="<c-b>"
+
+let g:UltiSnipsSnippetDirectories=["UltiSnips", $DOTFILES.'/UltiSnips']
 
 "-------------- TypeScript --------------------------
 
@@ -338,3 +340,6 @@ nnoremap <leader>fg :set ft=go<CR>
 nnoremap <leader>fjo :set ft=json<CR>
 
 nnoremap <leader>vt :vert term<CR>
+nnoremap <leader>l :cex system('npm run --silent lint:unix')<CR>
+
+autocmd BufWritePre *.js,*.jsx,*.mjs,*.ts,*.tsx,*.css,*.less,*.scss,*.json,*.graphql,*.md,*.vue,*.svelte,*.yaml,*.html PrettierAsync
