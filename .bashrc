@@ -85,10 +85,10 @@ complete -F __start_kubectl k
 alias dcu='docker compose up -d'
 alias dcd='docker compose down'
 alias g='git status'
-alias yd='yarn dev'
-alias ya='yarn start:api'
-alias ys='yarn start'
-alias yb='yarn build'
+alias yd='npm run dev'
+alias ya='npm run start:api'
+alias ys='npm run start'
+alias yb='npm run build'
 alias ascii='man ascii | grep -m 1 -A 88 --color=never Oct | grep -P -v "Tables|For|^\s*$"'
 alias lessf='less -F'
 alias prw='gh pr view -w'
@@ -149,6 +149,8 @@ export PATH="/home/dpsigor/.ebcli-virtual-env/executables:$PATH"
 export PATH="/home/dpsigor/.node-v16.11.1-linux-x64/bin:$PATH"
 bind '"\t":menu-complete'
 
+export CDPATH=".:$MAIN_REPOS_PATH"
+
 # Para disable ctrl+s e ctrl+q padrao do terminal
 stty -ixon
 
@@ -164,3 +166,9 @@ export PAGER="less"
 # export MANPAGER="sh -c 'col -bx | batcat -l man -p'"
 
 set -o vi
+
+[ -f ~/.fzf.bash ] && source ~/.fzf.bash
+
+function alou {
+  /usr/bin/wsl-notify-send.exe "$@"
+}

@@ -337,3 +337,4 @@ nnoremap <leader>ft :set ft=typescript<CR>
 nnoremap <leader>fg :set ft=go<CR>
 nnoremap <leader>fjo :set ft=json<CR>
 
+nnoremap <leader>vt :vert term<CR>
