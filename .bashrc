@@ -178,10 +178,11 @@ function acrpurge {
   registryName=$1
   repositoryName=$2
   timestamp=$3
+  timestampLen=${#timestamp}
   [[ -z "$registryName" ]] && echo "usage: registryName repositoryName timestamp" && return || :
   [[ -z "$repositoryName" ]] && echo "usage: registryName repositoryName timestamp" && return || :
   [[ -z "$timestamp" ]] && echo "usage: registryName repositoryName timestamp" && return || :
-  [[ "${#timestamp}" -ne 10 ]] && "invalid timestamp" && return || :
+  [[ "$timestampLen" -ne 10 ]] && echo "invalid timestamp" && return || :
   az acr manifest list-metadata --registry $registryName --name $repositoryName --query "[?createdTime < '$timestamp'].tags[]" | \
   jq .[] | sed 's/"//g' | while read line; do
     az acr manifest delete --registry $registryName --name $repositoryName:"$line" --yes;
