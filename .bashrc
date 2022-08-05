@@ -173,3 +173,23 @@ set -o vi
 function alou {
   /usr/bin/wsl-notify-send.exe "$@"
 }
+
+function acrpurge {
+  registryName=$1
+  repositoryName=$2
+  timestamp=$3
+  [[ -z "$registryName" ]] && echo "usage: registryName repositoryName timestamp" && return || :
+  [[ -z "$repositoryName" ]] && echo "usage: registryName repositoryName timestamp" && return || :
+  [[ -z "$timestamp" ]] && echo "usage: registryName repositoryName timestamp" && return || :
+  [[ "${#timestamp}" -ne 10 ]] && "invalid timestamp" && return || :
+  az acr manifest list-metadata --registry $registryName --name $repositoryName --query "[?createdTime < '$timestamp'].tags[]" | \
+  jq .[] | sed 's/"//g' | while read line; do
+    az acr manifest delete --registry $registryName --name $repositoryName:"$line" --yes;
+  done
+}
+
+function acrlist {
+  [[ -z "$1" ]] && echo "usage: registryName repositoryName" && return || :
+  [[ -z "$2" ]] && echo "usage: registryName repositoryName" && return || :
+  az acr manifest list-metadata --registry $1 --name $2 --orderby time_asc --query "[].createdTime" | jq .[]
+}

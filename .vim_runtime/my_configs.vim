@@ -130,14 +130,6 @@ set softtabstop =2
 set shiftwidth =2
 set expandtab
 
-"----------------- COC ------------------
-
-" nnoremap ]a l :call CocAction('diagnosticNext')<CR>
-" nnoremap [a h :call CocAction('diagnosticPrevious')<CR>
-" " autocmd BufNew,BufEnter *.json,*.ts,*html,*go execute "silent! CocEnable"
-" " autocmd BufLeave *.json,*.ts,*html,*go execute "silent! CocDisable"
-" nnoremap <silent> <leader>k :let getHover=CocAction('getHover')<CR>:tabnew<CR>:put=getHover<CR>
-
 "----------------- LSP ------------------
 
 if executable('pyls')
@@ -164,13 +156,13 @@ function! s:on_lsp_buffer_enabled() abort
     nmap <buffer> K <plug>(lsp-hover)
     nmap <buffer> <leader>d <plug>(lsp-document-diagnostics)
     nmap <buffer> <leader>ca <plug>(lsp-code-action)
-    " For Vim 8 (<c-@> corresponds to <c-space>):
     let g:lsp_format_sync_timeout = 1000
     let g:lsp_document_code_action_signs_enabled = 0
     let g:lsp_hover_ui = 'preview'
-    " autocmd! BufWritePre *.rs,*.go call execute('LspDocumentFormatSync')
 endfunction
 imap <c-@> <Plug>(asyncomplete_force_refresh)
+
+let g:lsp_settings_filetype_typescript = ['typescript-language-server', 'eslint-language-server']
 
 augroup lsp_install
     au!
@@ -238,7 +230,7 @@ augroup end
 
 function RunApiTest()
   let pos = getcurpos()
-  execute '!' . "./testapi.bash" . " " . expand("%") . " " . pos[1]
+  execute 'vert term' . "./runtest.bash" . " " . expand("%") . " " . pos[1]
 endfunction
 
 "-------------- Git Gutter --------------------------
@@ -342,4 +334,4 @@ nnoremap <leader>fjo :set ft=json<CR>
 nnoremap <leader>vt :vert term<CR>
 nnoremap <leader>l :cex system('npm run --silent lint:unix')<CR>
 
-autocmd BufWritePre *.js,*.jsx,*.mjs,*.ts,*.tsx,*.css,*.less,*.scss,*.json,*.graphql,*.md,*.vue,*.svelte,*.yaml,*.html PrettierAsync
+autocmd BufWritePre *.js,*.jsx,*.mjs,*.ts,*.tsx,*.css,*.less,*.scss,*.json,*.graphql,*.md,*.vue,*.svelte,*.yaml,*.html Prettier
