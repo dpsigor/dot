@@ -78,7 +78,7 @@ alias alert='notify-send --urgency=low -i "$([ $? = 0 ] && echo terminal || echo
 
 alias c=clear
 alias b=batcat
-alias ?=duck
+alias ?=ddgr
 alias top=htop
 alias k=kubectl
 complete -F __start_kubectl k

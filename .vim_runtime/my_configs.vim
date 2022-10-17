@@ -334,6 +334,6 @@ nnoremap <leader>fjo :set ft=json<CR>
 nnoremap <leader>vt :vert term<CR>
 nnoremap <leader>l :cex system('npm run --silent lint:unix')<CR>
 
-autocmd BufWritePre *.js,*.jsx,*.mjs,*.ts,*.tsx,*.css,*.less,*.scss,*.json,*.graphql,*.md,*.vue,*.svelte,*.yaml,*.html Prettier
+autocmd BufWritePre *.js,*.jsx,*.mjs,*.ts,*.tsx,*.css,*.less,*.scss,*.json,*.graphql,*.vue,*.svelte,*.yaml,*.html Prettier
 
 nnoremap <leader>vr :vert resize 140<CR>
