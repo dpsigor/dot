@@ -336,4 +336,12 @@ nnoremap <leader>l :cex system('npm run --silent lint:unix')<CR>
 
 autocmd BufWritePre *.js,*.jsx,*.mjs,*.ts,*.tsx,*.css,*.less,*.scss,*.json,*.graphql,*.vue,*.svelte,*.yaml,*.html Prettier
 
+function FormatProto()
+  let cursor_pos = getpos('.')
+  execute "%!clang-format --assume-filename=x.proto --style=file"
+  call setpos('.', cursor_pos)
+endfunction
+
+autocmd BufWritePre *.proto :call FormatProto()
+
 nnoremap <leader>vr :vert resize 140<CR>
