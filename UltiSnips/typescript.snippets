@@ -4,3 +4,14 @@ extends javascript
 snippet sleep "Sleep for x ms"
 await new Promise<void>(r => setTimeout(() => r(), $1));
 endsnippet
+
+snippet rf "Refinalizar user"
+onModuleInit() {
+	(async () => {
+		const user = await this.usersServ.findUser(/$1/);
+		if (!user) return;
+		await this.refinalizarUser(user.id);
+	})();
+}
+
+endsnippet

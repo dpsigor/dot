@@ -334,6 +334,9 @@ nnoremap <leader>fjo :set ft=json<CR>
 nnoremap <leader>vt :vert term<CR>
 nnoremap <leader>l :cex system('npm run --silent lint:unix')<CR>
 
+" Terminal mappings
+tnoremap <C-n> <C-w>N
+
 autocmd BufWritePre *.js,*.jsx,*.mjs,*.ts,*.tsx,*.css,*.less,*.scss,*.json,*.graphql,*.vue,*.svelte,*.yaml,*.html Prettier
 
 function FormatProto()
@@ -342,6 +345,24 @@ function FormatProto()
   call setpos('.', cursor_pos)
 endfunction
 
+function FormatC()
+  let cursor_pos = getpos('.')
+  execute "%!clang-format --assume-filename=x.c --style=Google"
+  call setpos('.', cursor_pos)
+endfunction
+
+function FormatH()
+  let cursor_pos = getpos('.')
+  execute "%!clang-format --assume-filename=x.h --style=Google"
+  call setpos('.', cursor_pos)
+endfunction
+
 autocmd BufWritePre *.proto :call FormatProto()
+autocmd BufWritePre *.c :call FormatC()
+autocmd BufWritePre *.h :call FormatH()
 
 nnoremap <leader>vr :vert resize 140<CR>
+
+" header files aqui...
+set path+=/usr/include/x86_64-linux-gnu
+set path+=/usr/local/include/
