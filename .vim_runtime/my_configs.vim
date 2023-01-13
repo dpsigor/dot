@@ -336,6 +336,7 @@ nnoremap <leader>l :cex system('npm run --silent lint:unix')<CR>
 
 " Terminal mappings
 tnoremap <C-n> <C-w>N
+tnoremap <C-p> <C-w>""
 
 autocmd BufWritePre *.js,*.jsx,*.mjs,*.ts,*.tsx,*.css,*.less,*.scss,*.json,*.graphql,*.vue,*.svelte,*.yaml,*.html Prettier
 

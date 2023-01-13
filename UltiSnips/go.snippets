@@ -51,3 +51,8 @@ snippet reerr "require no err"
 require.NoError(t, err)
 
 endsnippet
+
+snippet ctime "Time execution"
+start := time.Now()
+fmt.Println("$0", time.Since(start))
+endsnippet

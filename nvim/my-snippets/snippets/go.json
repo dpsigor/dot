@@ -1,0 +1,18 @@
+{
+	"Sleep": {
+		"prefix": "sleep",
+		"body": "time.Sleep($1 * time.Second)"
+	},
+	"Append=": {
+		"prefix": "ap=",
+		"body": "$1 = append($1, $2)"
+	},
+  "Struct": {
+    "prefix": "st",
+    "body": [
+      "type $1 struct {",
+      "  $0",
+      "}"
+    ]
+  }
+}
