@@ -15,5 +15,5 @@ mason_lspconfig.setup({
     "html",
     "tsserver",
     "gopls",
-  }
+  },
 })

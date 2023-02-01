@@ -40,8 +40,6 @@ return require('packer').startup(function(use)
 
   use("L3MON4D3/LuaSnip")
   use("saadparwaiz1/cmp_luasnip")
-  use("rafamadriz/friendly-snippets")
-  -- use('SirVer/ultisnips')
 
   -- managing and installing lsp servers, linters and formatters
   use('williamboman/mason.nvim')
