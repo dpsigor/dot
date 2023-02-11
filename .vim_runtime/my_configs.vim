@@ -107,6 +107,7 @@ Plug 'prabirshrestha/asyncomplete.vim'
 Plug 'prabirshrestha/asyncomplete-lsp.vim'
 Plug 'maxmellon/vim-jsx-pretty'
 Plug 'pangloss/vim-javascript'
+Plug 'github/copilot.vim'
 call plug#end()
 
 colorscheme gruvbox
@@ -131,15 +132,6 @@ set shiftwidth =2
 set expandtab
 
 "----------------- LSP ------------------
-
-if executable('pyls')
-    " pip install python-language-server
-    au User lsp_setup call lsp#register_server({
-        \ 'name': 'pyls',
-        \ 'cmd': {server_info->['pyls']},
-        \ 'allowlist': ['python'],
-        \ })
-endif
 
 function! s:on_lsp_buffer_enabled() abort
     setlocal omnifunc=lsp#complete
@@ -332,13 +324,14 @@ nnoremap <leader>fg :set ft=go<CR>
 nnoremap <leader>fjo :set ft=json<CR>
 
 nnoremap <leader>vt :vert term<CR>
+nnoremap <leader>vs :term<CR>
 nnoremap <leader>l :cex system('npm run --silent lint:unix')<CR>
 
 " Terminal mappings
 tnoremap <C-n> <C-w>N
 tnoremap <C-p> <C-w>""
 
-autocmd BufWritePre *.js,*.jsx,*.mjs,*.ts,*.tsx,*.css,*.less,*.scss,*.json,*.graphql,*.vue,*.svelte,*.yaml,*.html Prettier
+" autocmd BufWritePre *.js,*.jsx,*.mjs,*.ts,*.tsx,*.css,*.less,*.scss,*.json,*.graphql,*.vue,*.svelte,*.yaml,*.html Prettier
 
 function FormatProto()
   let cursor_pos = getpos('.')
