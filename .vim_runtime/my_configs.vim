@@ -5,7 +5,7 @@ set visualbell
 set fileformat=unix
 set fileformats=unix
 
-set colorcolumn=160
+set colorcolumn=80
 
 let &t_SI = "\<Esc>[6 q"
 let &t_EI = "\<Esc>[2 q"
@@ -24,6 +24,9 @@ vmap <silent> <C-k> :m '<-2<CR>gv=gv
 
 " Para substituir a palavra sob o curso
 nnoremap <leader>s *<S-n>cgn
+
+" parse json do terminal integrado
+nnoremap <leader>vj vip:s/\n//<CR>!!jq .<CR>
 
 " Emojis
 
@@ -87,7 +90,8 @@ Plug 'prettier/vim-prettier', {
   \ 'do': 'yarn install',
   \ 'for': ['javascript', 'typescript', 'css', 'less', 'scss', 'json', 'graphql', 'markdown', 'vue', 'yaml', 'html'] }
 Plug 'fatih/vim-go', { 'do': ':GoUpdateBinaries' }
-Plug 'morhetz/gruvbox'
+" Plug 'morhetz/gruvbox'
+Plug 'sainnhe/gruvbox-material'
 Plug 'SirVer/ultisnips'
 Plug 'junegunn/vim-easy-align'
 Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
@@ -110,14 +114,20 @@ Plug 'pangloss/vim-javascript'
 Plug 'github/copilot.vim'
 call plug#end()
 
-colorscheme gruvbox
 set cursorline
 set cursorlineopt=number
 " highlight CursorLine ctermbg=0
-highlight CursorLineNr ctermfg=Yellow ctermbg=0
 
 " Background transparente
-highlight Normal guibg=NONE ctermbg=NONE
+" highlight Normal guibg=NONE ctermbg=NONE
+let g:gruvbox_material_transparent_background=1
+
+let g:gruvbox_material_diagnostic_text_highlight=1
+
+let g:lightline.colorscheme = 'gruvbox_material'
+colorscheme gruvbox-material
+highlight CursorLineNr ctermfg=Yellow ctermbg=0
+
 
 " EasyAlign
 " Start interactive EasyAlign in visual mode (e.g. vipga)
@@ -156,6 +166,8 @@ imap <c-@> <Plug>(asyncomplete_force_refresh)
 
 let g:lsp_settings_filetype_typescript = ['typescript-language-server', 'eslint-language-server']
 
+let g:lsp_diagnostics_virtual_text_align = "right"
+
 augroup lsp_install
     au!
     " call s:on_lsp_buffer_enabled only for languages that has the server registered.
@@ -192,13 +204,18 @@ augroup gobindings
   au FileType go
         \  nmap <buffer> <silent> <leader>dt <plug>(go-def-tab)
         \| nmap <buffer> <silent> <leader>r :w<CR><S-G>o<CR>/*<CR>*/<Esc><S-o>:.!if test -f go.mod; then { go run .; } else { go run main.go; } fi<CR>
-        \| nmap <buffer> <silent> <leader>t <plug>(go-test-func)
+        \| nmap <buffer> <silent> <leader>t :call RunGoTest()<CR>
         \| nmap <silent> gd <plug>(go-def)
         \| nmap <buffer> <silent> <leader>tt <plug>(go-alternate-vertical)
         \| nmap <leader>i !ipgojson<CR>
         \| nmap <leader>b :!godistbuild<CR>
         \| nnoremap <buffer> <silent> <leader>c :GoFillStruct<CR>
 augroup end
+
+function RunGoTest()
+  let pos = getcurpos()
+  execute 'vert term' . " " . "dpgotest" . " " . expand("%") . " " . pos[1]
+endfunction
 
 let g:go_play_browser_command = '/mnt/c/Program\ Files/Google/Chrome/Application/chrome.exe %URL% &'
 
@@ -215,9 +232,7 @@ augroup tsbindings
   au FileType typescript
         \  nnoremap <leader>r :w<CR><S-G>o<CR>:.!tscrun<CR> 
         \| nnoremap <leader>t :call RunApiTest()<CR>
-        \| nnoremap <leader>i <S-v>}:s/\n//<CR>!!json2ts<CR>:nohl<CR>
-        \| nnoremap <leader>f f(lca"url<S-o>const url = pA;const options = j<S-a>ca{optionsk$p%<S-a>;j<S-i>const res = await oconst data = await res.json();
-        \| nnoremap <leader>f f(lca"url<S-o>const url = pA;const options = j<S-a>ca{optionsk$p%<S-a>;j<S-i>const res = await oconst data = await res.json();
+        \| nnoremap <leader>l :cex system('npm run --silent lint:unix')<CR>
 augroup end
 
 function RunApiTest()
@@ -295,6 +310,7 @@ nnoremap <Leader>c/ :%s/<C-r>// /gn<CR>
 
 inoremap ,, A,
 inoremap ;; A;
+inoremap <C-p> <C-r>"
 
 augroup jsbindings
   au! jsbindings
@@ -315,6 +331,9 @@ let g:pandoc#spell#enabled=0
 " Paste replace visual selection without coyping it
 vnoremap p "_dP
 
+" Join lines in visual mode
+vnoremap <S-j> :s/\n//<CR>:nohl<CR>
+
 " Set filetypes
 nnoremap <leader>fb :set ft=bash<CR>
 nnoremap <leader>fp :set ft=python<CR>
@@ -325,7 +344,6 @@ nnoremap <leader>fjo :set ft=json<CR>
 
 nnoremap <leader>vt :vert term<CR>
 nnoremap <leader>vs :term<CR>
-nnoremap <leader>l :cex system('npm run --silent lint:unix')<CR>
 
 " Terminal mappings
 tnoremap <C-n> <C-w>N

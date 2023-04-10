@@ -2,7 +2,6 @@ let Grep_Skip_Dirs = 'RCS CVS SCCS .svn generated'
 set grepprg=/bin/grep\ -nH
 
 let g:lightline = {
-      \ 'colorscheme': 'gruvbox',
       \ 'active': {
       \   'left': [ ['mode', 'paste'],
       \             ['fugitive', 'gitst', 'readonly', 'filename', 'modified'] ],

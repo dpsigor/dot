@@ -1,0 +1,17 @@
+#!/bin/bash
+
+file_path="$1"
+line_number="$2"
+
+testName=$(head -n "$line_number" "$file_path" | tac | grep -P -m 1 "^func Test")
+testName=${testName/func Test/}
+testName=${testName%%(*}
+
+if [[ -z "$testName" ]]; then
+    echo "No test found"
+    exit 1
+fi
+
+folder="${file_path%/*}"
+
+rg --files --glob '*.go' | entr -r bash -c 'echo ---------------- $(date +\"%H:%M:%S\") ---------------- && go test -v '"./$folder -run='$testName$'"
