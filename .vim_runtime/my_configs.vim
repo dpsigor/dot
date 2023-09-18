@@ -14,6 +14,10 @@ set ttimeoutlen=1
 set listchars=tab:>-,trail:~,extends:>,precedes:<,space:.
 set ttyfast
 
+" header files aqui...
+set path+=/usr/include/x86_64-linux-gnu
+set path+=/usr/local/include/
+
 " Para subir e descer linhas, nos três modos
 nmap <silent> <C-j> :m .+1<CR>==
 nmap <silent> <C-k> :m .-2<CR>==
@@ -26,7 +30,7 @@ vmap <silent> <C-k> :m '<-2<CR>gv=gv
 nnoremap <leader>s *<S-n>cgn
 
 " parse json do terminal integrado
-nnoremap <leader>vj vip:s/\n//<CR>!!jq .<CR>
+nnoremap <leader>vj vip:s/\n//<CR>!!jq .<CR>:nohl<CR>
 
 " Emojis
 
@@ -185,7 +189,6 @@ let g:go_highlight_operators = 1
 let g:go_fmt_autosave = 1
 let g:go_fmt_command = "goimports"
 " Status line types/signatures
-let g:go_auto_type_info = 1
 let g:go_fmt_fail_silently = 1
 
 let g:go_test_timeout="180s"
@@ -197,18 +200,19 @@ let g:go_term_mode = "split"
 let g:go_def_mapping_enabled = 0
 "rather than the preview-window
 " let g:go_doc_popup_window = 1
+"output of commands like :GoTest and :GoMetaLinter
+let g:go_list_type = "quickfix"
 "Go Path
 let g:go_bin_path = $HOME."/go/bin"
 augroup gobindings
   au! gobindings
   au FileType go
         \  nmap <buffer> <silent> <leader>dt <plug>(go-def-tab)
-        \| nmap <buffer> <silent> <leader>r :w<CR><S-G>o<CR>/*<CR>*/<Esc><S-o>:.!if test -f go.mod; then { go run .; } else { go run main.go; } fi<CR>
         \| nmap <buffer> <silent> <leader>t :call RunGoTest()<CR>
         \| nmap <silent> gd <plug>(go-def)
-        \| nmap <buffer> <silent> <leader>tt <plug>(go-alternate-vertical)
+        \| nmap <buffer> <silent> <leader>tt :GoAlternate!<CR>
         \| nmap <leader>i !ipgojson<CR>
-        \| nmap <leader>b :!godistbuild<CR>
+        \| nnoremap <buffer> <silent> <leader>l :cex system('make lint 2>&1 \| grep -v "^#" \| grep -v "^==>" \| grep -v "Makefile" \| sed "s/^vet: //"')<CR>
         \| nnoremap <buffer> <silent> <leader>c :GoFillStruct<CR>
 augroup end
 
@@ -230,8 +234,7 @@ let g:UltiSnipsSnippetDirectories=["UltiSnips", $DOTFILES.'/UltiSnips']
 augroup tsbindings
   au! tsbindings
   au FileType typescript
-        \  nnoremap <leader>r :w<CR><S-G>o<CR>:.!tscrun<CR> 
-        \| nnoremap <leader>t :call RunApiTest()<CR>
+        \  nnoremap <leader>t :call RunApiTest()<CR>
         \| nnoremap <leader>l :cex system('npm run --silent lint:unix')<CR>
 augroup end
 
@@ -305,18 +308,10 @@ nnoremap ç $
 vnoremap s 0
 vnoremap ç $
 nnoremap <leader>aa ggVG
-" c/ — Show a count of search results.
-nnoremap <Leader>c/ :%s/<C-r>// /gn<CR>
 
 inoremap ,, A,
 inoremap ;; A;
 inoremap <C-p> <C-r>"
-
-augroup jsbindings
-  au! jsbindings
-  au FileType javascript 
-        \  nnoremap <leader>r :w<CR><S-G>o<CR>:.!node index.js<CR> 
-augroup end
 
 au FileType sh nnoremap <leader>r :w<CR><S-G>o<CR>:call RunShell()<CR>
 au FileType bash nnoremap <leader>r :w<CR><S-G>o<CR>:call RunShell()<CR>
@@ -374,7 +369,3 @@ autocmd BufWritePre *.c :call FormatC()
 autocmd BufWritePre *.h :call FormatH()
 
 nnoremap <leader>vr :vert resize 140<CR>
-
-" header files aqui...
-set path+=/usr/include/x86_64-linux-gnu
-set path+=/usr/local/include/

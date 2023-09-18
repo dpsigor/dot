@@ -14,4 +14,36 @@ fi
 
 folder="${file_path%/*}"
 
-rg --files --glob '*.go' | entr -r bash -c 'echo ---------------- $(date +\"%H:%M:%S\") ---------------- && go test -v '"./$folder -run='$testName$'"
+rg --files --glob '*.go' | entr -r bash -c 'echo ---------------- $(date +\"%H:%M:%S\") ---------------- && go test -race -count=1 -v '"./$folder -run='$testName$'"
+
+
+# file_path="$1"
+# line_number="$2"
+
+# funcName=$(head -n "$line_number" "$file_path" | tac | grep -P -m 1 "^func Test")
+# funcName=${funcName/func Test/}
+# funcName=${funcName%%(*}
+
+# testName=$(head -n "$line_number" "$file_path" | tac | grep -P -m 1 "name: \"")
+# testName=${testName##*name: \"}
+# testName=${testName%%\",}
+# testName=${testName// /_}
+# testName=${testName//(/\\(}
+# testName=${testName//)/\\)}
+
+# if [[ -z "$funcName" ]]; then
+#     echo "No test found"
+#     exit 1
+# fi
+
+# runName="$funcName"
+
+# echo "funcName = $funcName"
+
+# if [[ -n "$testName" ]]; then
+#   runName="$runName/$testName"
+# fi
+
+# folder="${file_path%/*}"
+
+# rg --files --glob '*.go' | entr -r bash -c 'echo ---------------- $(date +\"%H:%M:%S\") ---------------- && go test -count=1 -v '"./$folder -run='$runName'"

@@ -93,6 +93,7 @@ alias npmscripts='jq .scripts package.json'
 alias ascii='man ascii | grep -m 1 -A 88 --color=never Oct | grep -P -v "Tables|For|^\s*$"'
 alias lessf='less -F'
 alias prw='gh pr view -w'
+alias sumatra='/mnt/c/Users/dpsig/Desktop/SumatraPDF-3.4.6-64.exe'
 
 if ! shopt -oq posix; then
   if [ -f /usr/share/bash-completion/bash_completion ]; then
@@ -113,6 +114,8 @@ export EDITOR="/usr/bin/vim"
 export VISUAL=vim
 export PYTHONDONTWRITEBYTECODE=1
 export GOBIN=/usr/local/go/bin
+export LC_CTYPE="en_US.UTF-8"
+export LC_ALL="en_US.UTF-8"
 
 updateScripts() {
   if [[ -d $SCRIPTS ]]; then
@@ -149,6 +152,10 @@ export PATH=$PATH:~/go/bin
 export PATH="/home/dpsigor/.ebcli-virtual-env/executables:$PATH"
 export PATH="/home/dpsigor/.node-v16.11.1-linux-x64/bin:$PATH"
 bind '"\t":menu-complete'
+export BUN_INSTALL="$HOME/.bun"
+export PATH=$BUN_INSTALL/bin:$PATH
+export DENO_INSTALL="/home/dpsigor/.deno"
+export PATH="$DENO_INSTALL/bin:$PATH"
 
 export CDPATH=".:$MAIN_REPOS_PATH"
 

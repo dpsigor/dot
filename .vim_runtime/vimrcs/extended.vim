@@ -53,6 +53,7 @@ cnoremap <C-N> <Down>
 " => quickfix
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 map <leader>cc :botright cope<cr>
+map <leader>lc :botright lope<cr>
 map <leader>co ggVGy:tabnew<cr>:set syntax=qf<cr>pgg
 map <leader>j :cn<cr>
 map <leader>k :cp<cr>
