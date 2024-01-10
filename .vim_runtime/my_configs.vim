@@ -87,6 +87,7 @@ syntax on
 filetype plugin indent on
 "---------------------------- Plugins ----------------------------
 call plug#begin('~/.vim/plugged')
+Plug 'ziglang/zig.vim'
 Plug 'airblade/vim-gitgutter'
 Plug 'itchyny/lightline.vim'
 Plug 'jiangmiao/auto-pairs'
@@ -243,6 +244,26 @@ function RunApiTest()
   execute 'vert term' . "./runtest.bash" . " " . expand("%") . " " . pos[1]
 endfunction
 
+"-------------- Python --------------------------
+
+augroup pybindings
+  au! pybindings
+  au FileType python
+        \  nnoremap <leader>tt :call PythonAlternate()<CR>
+augroup end
+
+function PythonAlternate()
+  let f = expand("%")
+  if f =~# "test_"
+    let f = substitute(f, "test_", "", "")
+  else
+    let filename = substitute(f, '.\+\/', "", "")
+    let path = substitute(f, filename . '$', "", "")
+    let f = path . "test_" . filename
+  endif
+  execute 'e ' . f
+endfunction
+
 "-------------- Git Gutter --------------------------
 let g:gitgutter_enabled=1
 let g:gitgutter_set_sign_backgrounds=1
@@ -270,7 +291,7 @@ nmap <C-s> <Esc><Esc>:Rg!<CR>
 " -------- Making Vim with Typescript faster -----
 " set re=0
 " set regexpengine=1
-set synmaxcol=200
+set synmaxcol=220
 set redrawtime=10000
 syntax sync fromstart
 
@@ -315,7 +336,6 @@ inoremap <C-p> <C-r>"
 
 au FileType sh nnoremap <leader>r :w<CR><S-G>o<CR>:call RunShell()<CR>
 au FileType bash nnoremap <leader>r :w<CR><S-G>o<CR>:call RunShell()<CR>
-au FileType python nnoremap <leader>r :w<CR><S-G>o<CR>"""o"""O!!python3 %<CR>
 
 function RunShell()
   execute '.!' . expand("%:p")
@@ -364,8 +384,15 @@ function FormatH()
   call setpos('.', cursor_pos)
 endfunction
 
+function FormatPython()
+  let cursor_pos = getpos('.')
+  execute "%!black -t py310 -q -"
+  call setpos('.', cursor_pos)
+endfunction
+
 autocmd BufWritePre *.proto :call FormatProto()
 autocmd BufWritePre *.c :call FormatC()
 autocmd BufWritePre *.h :call FormatH()
+autocmd BufWritePre *.py :call FormatPython()
 
 nnoremap <leader>vr :vert resize 140<CR>
