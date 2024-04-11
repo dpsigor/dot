@@ -59,3 +59,11 @@ endsnippet
 snippet todo "TODO:"
 // TODO (dpsigor) 
 endsnippet
+
+snippet jsondebug
+fmt.Println("")
+enc := json.NewEncoder(os.Stdout)
+enc.SetIndent("", "  ")
+enc.Encode($0)
+fmt.Println("")
+endsnippet

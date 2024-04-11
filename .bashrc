@@ -178,10 +178,6 @@ set -o vi
 
 [ -f ~/.fzf.bash ] && source ~/.fzf.bash
 
-function alou {
-  /usr/bin/wsl-notify-send.exe "$@"
-}
-
 function acrpurge {
   registryName=$1
   repositoryName=$2

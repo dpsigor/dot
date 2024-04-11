@@ -210,8 +210,10 @@ augroup gobindings
   au FileType go
         \  nmap <buffer> <silent> <leader>dt <plug>(go-def-tab)
         \| nmap <buffer> <silent> <leader>t :call RunGoTest()<CR>
+        \| nmap <buffer> <silent> <leader>tb :call RunGoTableTest()<CR>
         \| nmap <silent> gd <plug>(go-def)
         \| nmap <buffer> <silent> <leader>tt :GoAlternate!<CR>
+        \| nmap <buffer> <silent> <leader>rn :GoRename<CR>
         \| nmap <leader>i !ipgojson<CR>
         \| nnoremap <buffer> <silent> <leader>l :cex system('make lint 2>&1 \| grep -v "^#" \| grep -v "^==>" \| grep -v "Makefile" \| sed "s/^vet: //"')<CR>
         \| nnoremap <buffer> <silent> <leader>c :GoFillStruct<CR>
@@ -220,6 +222,22 @@ augroup end
 function RunGoTest()
   let pos = getcurpos()
   execute 'vert term' . " " . "dpgotest" . " " . expand("%") . " " . pos[1]
+endfunction
+
+function RunGoTableTest()
+  " get table test name
+  let line_content = getline(search("name: ", "bnc"))
+  let left_idx = stridx(line_content, '"')
+  let right_idx = strridx(line_content, '"')
+  let tt_name = strpart(line_content, left_idx + 1, right_idx - left_idx - 1)
+  let tt_name = substitute(tt_name, ' ', '_', 'g')
+  let tt_name = substitute(tt_name, '\.', '_', 'g')
+  " get test name
+  let fline_content = getline(search("func Test", "bnc"))
+  let fright_idx = strridx(fline_content, "(")
+  let test_name = strpart(fline_content, 5, fright_idx - 5)
+  let test_cmd = 'go test -race -count=1 -v ./'. expand("%:h") . " -run=". test_name . "$/" . tt_name
+  execute 'vert term bash -c "rg --files --glob *.go | entr -r ' . test_cmd . '"'
 endfunction
 
 let g:go_play_browser_command = '/mnt/c/Program\ Files/Google/Chrome/Application/chrome.exe %URL% &'
