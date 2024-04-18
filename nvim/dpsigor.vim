@@ -49,7 +49,7 @@ set viminfo='20,<1000,s1000
 set signcolumn=number
 
 let $RC="$HOME/.config/nvim/init.lua"
-map <leader>e :e! $RC<CR>
+nnoremap <leader>f :e! $RC<CR>
 
 try
     set switchbuf=useopen,usetab,newtab
@@ -113,3 +113,5 @@ function! VisualSelection(direction, extra_filter) range
 endfunction
 
 let g:UltiSnipsExpandTrigger="<tab>"
+
+let g:netrw_liststyle = 3
