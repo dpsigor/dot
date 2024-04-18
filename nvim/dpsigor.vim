@@ -78,6 +78,9 @@ nnoremap k gk
 nnoremap n nzz
 nnoremap N Nzz
 
+nnoremap <leader>j :cn<CR>
+nnoremap <leader>k :cp<CR>
+
 inoremap <C-p> <C-r>"
 
 vnoremap p "_dP

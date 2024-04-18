@@ -50,13 +50,26 @@ vim.api.nvim_create_autocmd('LspAttach', {
     -- Enable completion triggered by <c-x><c-o>
     vim.bo[ev.buf].omnifunc = 'v:lua.vim.lsp.omnifunc'
 
+    local function on_list(options)
+        for i=#options.items,1,-1 do
+            if options.items[i].filename:sub(-8) == "mocks.go" then
+                table.remove(options.items, i)
+            end
+        end
+        vim.fn.setqflist({}, ' ', options)
+        vim.api.nvim_command('cfirst')
+    end
+
     -- Buffer local mappings.
     -- See `:help vim.lsp.*` for documentation on any of the below functions
     local opts = { buffer = ev.buf }
     vim.keymap.set('n', 'gD', vim.lsp.buf.declaration, opts)
     vim.keymap.set('n', 'gd', vim.lsp.buf.definition, opts)
     vim.keymap.set('n', 'K', vim.lsp.buf.hover, opts)
-    vim.keymap.set('n', 'gi', vim.lsp.buf.implementation, opts)
+    vim.keymap.set('n', 'gi', function() vim.lsp.buf.implementation({
+        buffer = ev.buf,
+        on_list = on_list
+    }) end)
     vim.keymap.set('n', '<C-k>', vim.lsp.buf.signature_help, opts)
     -- vim.keymap.set('n', '<space>wa', vim.lsp.buf.add_workspace_folder, opts)
     -- vim.keymap.set('n', '<space>wr', vim.lsp.buf.remove_workspace_folder, opts)
