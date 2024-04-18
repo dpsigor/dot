@@ -16,6 +16,8 @@ Plug('nvim-telescope/telescope.nvim')
 Plug('neovim/nvim-lspconfig')
 Plug('lewis6991/gitsigns.nvim')
 Plug('nvim-treesitter/nvim-treesitter')
+Plug ('junegunn/fzf')
+Plug('junegunn/fzf.vim')
 
 vim.call('plug#end')
 
@@ -101,7 +103,7 @@ require'nvim-treesitter.configs'.setup {
   highlight = {
     enable = true,
     -- Or use a function for more flexibility, e.g. to disable slow treesitter highlight for large files
-    disable = {"vimdoc"},
+    disable = {"vimdoc","lua"},
 
     -- -- Setting this to true will run `:h syntax` and tree-sitter at the same time.
     -- -- Set this to `true` if you depend on 'syntax' being enabled (like for indentation).
@@ -113,6 +115,10 @@ require'nvim-treesitter.configs'.setup {
 
 -- fugitive
 vim.keymap.set("n", "<leader>g", ":G<CR><C-w>o", {})
+
+-- fzf
+-- TODO: use telescope for this. Must configure git_bcommits to output as this
+vim.keymap.set("n", "<C-g>", ":BCommits<CR>", {})
 
 require('dpsigor_telescope')
 

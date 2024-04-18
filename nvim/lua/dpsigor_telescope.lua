@@ -26,4 +26,3 @@ vim.keymap.set('n', '<C-d>', function() builtin.buffers({
     sort_mru=true,
     ignore_current_buffer=true,
 }) end)
-vim.keymap.set('n', '<C-g>', builtin.git_bcommits, {})
