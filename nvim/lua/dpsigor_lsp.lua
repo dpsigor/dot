@@ -57,7 +57,7 @@ vim.api.nvim_create_autocmd('LspAttach', {
             end
         end
         vim.fn.setqflist({}, ' ', options)
-        vim.api.nvim_command('cfirst')
+        vim.api.nvim_command('copen')
     end
 
     -- Buffer local mappings.
