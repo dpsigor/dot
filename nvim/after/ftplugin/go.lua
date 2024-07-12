@@ -22,7 +22,11 @@ vim.keymap.set('n', '<leader>t', function()
   end
   local test_name_ln = vim.fn.search('^func Test', 'cbnW')
   local test_name = vim.fn.getline(test_name_ln):match '^func Test(.+)%('
-  local cmd = 'rg --files --glob "*.go" | entr -r go test -race -count=1 -v -run="^Test' .. test_name .. '$" ./' .. vim.fn.expand '%:h'
+  local module_path = vim.fn.expand '%:h'
+  if not module_path:match '^/' then
+    module_path = './' .. module_path
+  end
+  local cmd = 'rg --files --glob "*.go" | entr -r go test -race -count=1 -v -run="^Test' .. test_name .. '$" ' .. module_path
   vim.api.nvim_command 'vsplit'
   vim.api.nvim_command('terminal  ' .. cmd)
   vim.cmd 'startinsert'
@@ -80,12 +84,11 @@ vim.keymap.set('n', '<leader>r', function()
 
   vim.print('Running coverage for module ' .. module_name)
 
-  local cmd = '!go test -count=1 -coverprofile=/dev/stdout -failfast ./' .. module_name .. ' | grep -P "^FAIL|:\\d+.\\d+,\\d+.\\d+ \\d+ \\d+$"'
-  local out = vim.api.nvim_exec2(cmd, {
-    output = true,
-  })
+  local cmd = '!go test -count=1 -coverprofile /tmp/nvim_gocoverage -failfast ./' .. module_name .. ' | grep -P "^FAIL|:\\d+.\\d+,\\d+.\\d+ \\d+ \\d+$" || :'
+  vim.api.nvim_exec2(cmd, {})
 
-  local lines = vim.split(out.output, '\n')
+  -- read from /tmp/nvim_gocoverage
+  local lines = vim.fn.readfile '/tmp/nvim_gocoverage'
 
   if #lines < 2 then
     vim.print('No coverage data found for ' .. module_name)

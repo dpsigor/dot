@@ -673,9 +673,9 @@ require('lazy').setup({
               t ')',
             }),
             s('fn', {
-              t 'fmt.Println(',
+              t 'fmt.Println("',
               i(1),
-              t ')',
+              t '")',
             }),
             s({ trig = 'err', descr = '(errwr) "Error handling with fmt.Errorf"', priority = -1000 }, {
               t 'if ',
@@ -706,12 +706,13 @@ require('lazy').setup({
     },
     config = function()
       local cmp = require 'cmp'
+      local ls = require 'luasnip'
       cmp.setup {
-        -- snippet = {
-        --   expand = function(args)
-        --     ls.lsp_expand(args.body)
-        --   end,
-        -- },
+        snippet = {
+          expand = function(args)
+            ls.lsp_expand(args.body)
+          end,
+        },
         completion = { completeopt = 'menu,menuone,noinsert' },
 
         -- For an understanding of why these mappings were
@@ -776,20 +777,20 @@ require('lazy').setup({
   { -- Collection of various small independent plugins/modules
     'echasnovski/mini.nvim',
     config = function()
-      -- Better Around/Inside textobjects
-      --
-      -- Examples:
-      --  - va)  - [V]isually select [A]round [)]paren
-      --  - yinq - [Y]ank [I]nside [N]ext [']quote
-      --  - ci'  - [C]hange [I]nside [']quote
-      require('mini.ai').setup { n_lines = 500 }
+      -- -- Better Around/Inside textobjects
+      -- --
+      -- -- Examples:
+      -- --  - va)  - [V]isually select [A]round [)]paren
+      -- --  - yinq - [Y]ank [I]nside [N]ext [']quote
+      -- --  - ci'  - [C]hange [I]nside [']quote
+      -- require('mini.ai').setup { n_lines = 500 }
 
-      -- Add/delete/replace surroundings (brackets, quotes, etc.)
-      --
-      -- - saiw) - [S]urround [A]dd [I]nner [W]ord [)]Paren
-      -- - sd'   - [S]urround [D]elete [']quotes
-      -- - sr)'  - [S]urround [R]eplace [)] [']
-      require('mini.surround').setup()
+      -- -- Add/delete/replace surroundings (brackets, quotes, etc.)
+      -- --
+      -- -- - saiw) - [S]urround [A]dd [I]nner [W]ord [)]Paren
+      -- -- - sd'   - [S]urround [D]elete [']quotes
+      -- -- - sr)'  - [S]urround [R]eplace [)] [']
+      -- require('mini.surround').setup()
 
       -- Simple and easy statusline.
       --  You could remove this setup call if you don't like it,
@@ -892,7 +893,7 @@ require('lazy').setup({
   -- require 'kickstart.plugins.debug',
   -- require 'kickstart.plugins.indent_line',
   -- require 'kickstart.plugins.lint',
-  -- require 'kickstart.plugins.autopairs',
+  require 'kickstart.plugins.autopairs',
   -- require 'kickstart.plugins.neo-tree',
   require 'kickstart.plugins.gitsigns', -- adds gitsigns recommend keymaps
 
@@ -924,7 +925,9 @@ require('lazy').setup({
   },
 })
 
-vim.cmd 'colorscheme gruvbox'
+-- vim.cmd 'colorscheme gruvbox'
+vim.cmd 'colorscheme kanagawa-dragon'
+-- vim.cmd 'colorscheme gruvbuddy'
 
 -- Map 0 para ^, ç para $
 vim.keymap.set('n', '0', '0^', { noremap = true })
@@ -978,3 +981,11 @@ vim.opt.tabstop = 2
 
 -- Source vim with <leader>x
 vim.keymap.set('n', '<leader>x', ':source %<CR>')
+
+-- format json
+-- nnoremap <leader>vj vip:s/\n//<CR>!!jq .<CR>:nohl<CR>
+vim.keymap.set('n', '<leader>vj', 'vip:s/\\n//<CR>!!jq .<CR>:nohl<CR>')
+
+-- center screen on next search
+vim.keymap.set('n', 'n', 'nzz')
+vim.keymap.set('n', 'N', 'Nzz')

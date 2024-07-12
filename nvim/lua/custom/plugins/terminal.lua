@@ -3,7 +3,6 @@ local terminal_in_insert_modes = {}
 vim.keymap.set('t', '<C-n>', function()
   terminal_in_insert_modes[vim.fn.bufnr()] = false
   vim.cmd 'stopinsert'
-  vim.cmd 'setlocal number'
 end, { desc = 'Exit terminal mode' })
 
 vim.keymap.set('t', '<C-w>h', function()
@@ -33,13 +32,11 @@ end)
 vim.keymap.set('n', '<leader>vt', function()
   vim.api.nvim_command 'vsplit'
   vim.api.nvim_command 'terminal'
-  vim.cmd 'setlocal nonumber'
   vim.cmd 'startinsert'
 end)
 vim.keymap.set('n', '<leader>vs', function()
   vim.api.nvim_command 'split'
   vim.api.nvim_command 'terminal'
-  vim.cmd 'setlocal nonumber'
   vim.cmd 'startinsert'
 end)
 
@@ -77,7 +74,8 @@ vim.api.nvim_create_autocmd('WinEnter', {
 vim.api.nvim_create_autocmd('TermEnter', {
   group = 'MyTerminal',
   callback = function()
-    vim.cmd 'setlocal nonumber'
+    vim.cmd 'setlocal number'
+    vim.cmd 'set signcolumn=no'
   end,
 })
 
