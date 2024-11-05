@@ -26,7 +26,10 @@ vim.keymap.set('n', '<leader>t', function()
   if not module_path:match '^/' then
     module_path = './' .. module_path
   end
-  local cmd = 'rg --files --glob "*.go" | entr -r go test -race -count=1 -v -run="^Test' .. test_name .. '$" ' .. module_path
+  local now_line = 'echo --------' .. os.date '%Y-%m-%d %H:%M:%S' .. '--------'
+  local gotest_cmd = 'go test -race -count=1 -v -run="^Test' .. test_name .. '$" ' .. module_path
+  local bash_cmd = "bash -c '" .. now_line .. ' && ' .. gotest_cmd .. "'"
+  local cmd = 'rg --files --glob "*.go" | entr -r ' .. bash_cmd
   vim.api.nvim_command 'vsplit'
   vim.api.nvim_command('terminal  ' .. cmd)
   vim.cmd 'startinsert'
@@ -57,7 +60,7 @@ local function hightlight_coverage(buf, lines)
   end
 end
 
-vim.keymap.set('n', '<leader>r', function()
+vim.keymap.set('n', '<leader>tc', function()
   local cwd = vim.loop.cwd()
   if cwd == nil then
     vim.print 'Not in a project directory'
@@ -112,6 +115,6 @@ vim.keymap.set('n', '<leader>r', function()
   hightlight_coverage(buf, lines)
   is_coverage_on = true
   vim.print 'Coverage data found'
-end)
+end, { noremap = true, silent = true })
 
 return {}

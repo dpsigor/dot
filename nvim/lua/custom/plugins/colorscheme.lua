@@ -1,13 +1,12 @@
 return {
   {
-    'ellisonleao/gruvbox.nvim',
-    priority = 1000,
-    opts = {
-      contrast = 'dark',
-    },
-  },
-  {
-    'luisiacc/gruvbox-baby',
+    'sainnhe/gruvbox-material',
+    config = function()
+      -- vim.g.gruvbox_material_foreground = 'original'
+      vim.g.gruvbox_material_background = 'hard'
+      vim.g.gruvbox_material_enable_bold = 1
+      vim.cmd 'colorscheme gruvbox-material'
+    end,
   },
   {
     'EdenEast/nightfox.nvim',
@@ -29,6 +28,9 @@ return {
     opts = {
       terminalColors = false,
     },
+    -- config = function()
+    --   vim.cmd 'colorscheme kanagawa'
+    -- end,
   },
   {
     'tjdevries/colorbuddy.nvim',

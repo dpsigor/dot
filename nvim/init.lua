@@ -79,8 +79,6 @@ vim.keymap.set('n', '<Esc>', '<cmd>nohlsearch<CR>')
 -- Diagnostic keymaps
 vim.keymap.set('n', '[d', vim.diagnostic.goto_prev, { desc = 'Go to previous [D]iagnostic message' })
 vim.keymap.set('n', ']d', vim.diagnostic.goto_next, { desc = 'Go to next [D]iagnostic message' })
--- vim.keymap.set('n', '<leader>e', vim.diagnostic.open_float, { desc = 'Show diagnostic [E]rror messages' })
--- vim.keymap.set('n', '<leader>q', vim.diagnostic.setloclist, { desc = 'Open diagnostic [Q]uickfix list' })
 
 -- Keybinds to prevent accidental movement
 
@@ -283,7 +281,9 @@ require('lazy').setup({
       -- vim.keymap.set('n', '<leader>ss', builtin.builtin, { desc = '[S]earch [S]elect Telescope' })
       -- vim.keymap.set('n', '<leader>sw', builtin.grep_string, { desc = '[S]earch current [W]ord' })
       -- vim.keymap.set('n', '<leader>sg', builtin.live_grep, { desc = '[S]earch by [G]rep' })
-      -- vim.keymap.set('n', '<leader>sd', builtin.diagnostics, { desc = '[S]earch [D]iagnostics' })
+      vim.keymap.set('n', '<leader>ld', function()
+        vim.diagnostic.setqflist()
+      end, { desc = '[S]earch [D]iagnostics' })
       -- vim.keymap.set('n', '<leader>sr', builtin.resume, { desc = '[S]earch [R]esume' })
       -- vim.keymap.set('n', '<leader>s.', builtin.oldfiles, { desc = '[S]earch Recent Files ("." for repeat)' })
       vim.keymap.set('n', '<C-d>', function()
@@ -685,6 +685,19 @@ require('lazy').setup({
               t { ': %w", err)', '' },
               t '}',
             }),
+            s('fjson', {
+              t 'enc := json.NewEncoder(os.Stdout); enc.SetIndent("", " "); enc.Encode(',
+              i(1),
+              t ')',
+            }),
+          })
+
+          ls.add_snippets('javascript', {
+            s('cl', {
+              t 'console.log(',
+              i(1),
+              t ')',
+            }),
           })
 
           vim.keymap.set('i', '<tab>', function()
@@ -925,10 +938,6 @@ require('lazy').setup({
   },
 })
 
--- vim.cmd 'colorscheme gruvbox'
-vim.cmd 'colorscheme kanagawa-dragon'
--- vim.cmd 'colorscheme gruvbuddy'
-
 -- Map 0 para ^, ç para $
 vim.keymap.set('n', '0', '0^', { noremap = true })
 vim.keymap.set('n', 'ç', '$', { noremap = true })
@@ -989,3 +998,11 @@ vim.keymap.set('n', '<leader>vj', 'vip:s/\\n//<CR>!!jq .<CR>:nohl<CR>')
 -- center screen on next search
 vim.keymap.set('n', 'n', 'nzz')
 vim.keymap.set('n', 'N', 'Nzz')
+
+-- quickfix list
+vim.keymap.set('n', '<leader>j', ':cnext<CR>', { silent = true, noremap = true })
+vim.keymap.set('n', '<leader>k', ':cprev<CR>', { silent = true, noremap = true })
+
+-- moving vertically on wrapped lines
+vim.keymap.set('n', 'j', 'gj', { silent = true, noremap = true })
+vim.keymap.set('n', 'k', 'gk', { silent = true, noremap = true })
