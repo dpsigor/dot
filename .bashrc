@@ -198,3 +198,6 @@ function acrlist {
   [[ -z "$2" ]] && echo "usage: registryName repositoryName" && return || :
   az acr manifest list-metadata --registry $1 --name $2 --orderby time_asc --query "[].createdTime" | jq .[]
 }
+
+. "$HOME/.asdf/asdf.sh"
+. "$HOME/.asdf/completions/asdf.bash"

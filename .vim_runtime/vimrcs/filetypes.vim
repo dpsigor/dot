@@ -54,3 +54,22 @@ endif
 " => Markdown
 """"""""""""""""""""""""""""""
 let vim_markdown_folding_disabled = 1
+
+""""""""""""""""""""""""""""""
+" => switch from .(ts|tsx) to _test.(ts|tsx) and vice-versa
+""""""""""""""""""""""""""""""
+au FileType typescript nnoremap <buffer> <leader>tt :call <SID>ToggleTestFile()<cr>
+au FileType typescriptreact nnoremap <buffer> <leader>tt :call <SID>ToggleTestFile()<cr>
+
+function! s:ToggleTestFile()
+  let l:file = expand('%')
+  let l:dir = expand('%:p:h')
+  let l:base = fnamemodify(l:file, ':t:r')
+  let l:ext = fnamemodify(l:file, ':e')
+  if l:base =~ '_test$'
+    let l:new_file = l:dir . '/' . substitute(l:base, '_test$', '', '') . '.' . l:ext
+  else
+    let l:new_file = l:dir . '/' . l:base . '_test.' . l:ext
+  endif
+  execute 'e ' . l:new_file
+endfunction

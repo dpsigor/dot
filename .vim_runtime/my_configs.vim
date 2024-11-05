@@ -158,8 +158,8 @@ function! s:on_lsp_buffer_enabled() abort
     nmap <buffer> gi <plug>(lsp-implementation)
     " nmap <buffer> gt <plug>(lsp-type-definition)
     nmap <buffer> <leader>rn <plug>(lsp-rename)
-    nmap <buffer> [a <plug>(lsp-previous-diagnostic)
-    nmap <buffer> ]a <plug>(lsp-next-diagnostic)
+    nmap <buffer> [d <plug>(lsp-previous-diagnostic)
+    nmap <buffer> ]d <plug>(lsp-next-diagnostic)
     nmap <buffer> K <plug>(lsp-hover)
     nmap <buffer> <leader>d <plug>(lsp-document-diagnostics)
     nmap <buffer> <leader>ca <plug>(lsp-code-action)
@@ -169,9 +169,11 @@ function! s:on_lsp_buffer_enabled() abort
 endfunction
 imap <c-@> <Plug>(asyncomplete_force_refresh)
 
-let g:lsp_settings_filetype_typescript = ['typescript-language-server', 'eslint-language-server']
+let g:lsp_settings_filetype_typescript = ['typescript-language-server', 'eslint-language-server', 'deno']
 
-let g:lsp_diagnostics_virtual_text_align = "right"
+let g:lsp_diagnostics_virtual_text_enabled = 0
+" let g:lsp_diagnostics_virtual_text_align = "right"
+" let g:lsp_diagnostics_virtual_text_wrap = "truncate"
 
 augroup lsp_install
     au!
@@ -344,8 +346,6 @@ nnoremap n nzz
 nnoremap N Nzz
 nnoremap s 0
 nnoremap ç $
-vnoremap s 0
-vnoremap ç $
 nnoremap <leader>aa ggVG
 
 inoremap ,, A,
@@ -414,3 +414,7 @@ autocmd BufWritePre *.h :call FormatH()
 autocmd BufWritePre *.py :call FormatPython()
 
 nnoremap <leader>vr :vert resize 140<CR>
+
+" Copilot
+imap <silent><script><expr> <C-J> copilot#Accept("\<CR>")
+let g:copilot_no_tab_map = v:true
