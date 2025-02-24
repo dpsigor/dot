@@ -5,10 +5,10 @@ vim.keymap.set('n', '<leader>tt', function()
   local filename = vim.fn.expand '%:t'
   local dirname = vim.fn.expand '%:h'
   if not filename:match '_test.go' then
-    local impl_filename = filename:gsub('.go', '_test.go')
+    local impl_filename = filename:gsub('.go$', '_test.go')
     vim.cmd('edit ' .. dirname .. '/' .. impl_filename)
   else
-    local test_filename = filename:gsub('_test.go', '.go')
+    local test_filename = filename:gsub('_test.go$', '.go')
     vim.cmd('edit ' .. dirname .. '/' .. test_filename)
   end
 end)
