@@ -1,0 +1,12 @@
+
+
+[TODO]()
+# feat: uma nova funcionalidade
+# chore: atualização de build tasks, configuração de gerente de pacotes, etc.; sem mudança de código de produção
+# docs: mudanças de documentação
+# fix: um conserto de bug
+# refactor: refatoração código de produção
+# style: formatação, ponto-e-vírgula faltando, etc.; sem mudança de código
+# test: adicionar testes, refatorar testes; sem mudança de código de produção
+#
+# https://github.com/stone-payments/stoneco-guidelines/tree/master/git-style

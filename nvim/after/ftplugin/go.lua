@@ -1,5 +1,28 @@
 -- Golang specific settings
 
+-- Filter test case by name
+vim.keymap.set('n', '<leader>tf', function()
+  local current_line = vim.api.nvim_get_current_line()
+  local test_case_name = current_line:match 'name: +"(.+)"'
+  if not test_case_name then
+    print 'No test case name found in the current line'
+    return
+  end
+  local test_loop_ln = vim.fn.search('for _, tt := range', 'cW')
+  if test_loop_ln == 0 then
+    print 'test loop line not found'
+    return
+  end
+
+  -- add line below with test case name
+  local current_buf = vim.api.nvim_get_current_buf()
+  vim.api.nvim_buf_set_lines(current_buf, test_loop_ln, test_loop_ln, true, {
+    '    if tt.name != "' .. test_case_name .. '" {',
+    '        continue',
+    '    }',
+  })
+end, { noremap = true, silent = true })
+
 -- Alternate between test and implementation files
 vim.keymap.set('n', '<leader>tt', function()
   local filename = vim.fn.expand '%:t'

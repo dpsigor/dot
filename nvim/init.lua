@@ -607,7 +607,11 @@ require('lazy').setup({
       end,
       formatters_by_ft = {
         lua = { 'stylua' },
-        go = { 'gofumpt', 'goimports', 'goimports-reviser' },
+        go = {
+          'gofumpt',
+          'goimports',
+          -- 'goimports-reviser'
+        },
         -- Conform can also run multiple formatters sequentially
         -- python = { "isort", "black" },
         --
@@ -994,6 +998,8 @@ vim.keymap.set('n', '<leader>x', ':source %<CR>')
 -- format json
 -- nnoremap <leader>vj vip:s/\n//<CR>!!jq .<CR>:nohl<CR>
 vim.keymap.set('n', '<leader>vj', 'vip:s/\\n//<CR>!!jq .<CR>:nohl<CR>')
+vim.keymap.set('n', '<leader>cj', 'vip!yq -p csv -o json<CR>')
+vim.keymap.set('n', '<leader>jc', 'vip!yq -p json -o csv --csv-separator=";"<CR>')
 
 -- center screen on next search
 vim.keymap.set('n', 'n', 'nzz')
@@ -1006,3 +1012,19 @@ vim.keymap.set('n', '<leader>k', ':cprev<CR>', { silent = true, noremap = true }
 -- moving vertically on wrapped lines
 vim.keymap.set('n', 'j', 'gj', { silent = true, noremap = true })
 vim.keymap.set('n', 'k', 'gk', { silent = true, noremap = true })
+
+-- make lint
+vim.keymap.set('n', '<leader>l', ':make lint<CR>', { silent = true, noremap = true })
+
+-- turn branch name into commit title
+vim.keymap.set('n', '<leader>cm', function()
+  local branch = vim.fn.system 'git rev-parse --abbrev-ref HEAD'
+  branch = branch:gsub('%s+', '') -- remove trailing spaces
+  if branch == '' then
+    print 'No branch name found'
+    return
+  end
+  branch = branch:gsub('/', ': ')
+  branch = branch:gsub('-', ' ')
+  vim.api.nvim_put({ branch }, 'c', true, true)
+end, { desc = 'Inserts the branch name, changing some characters' })
