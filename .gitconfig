@@ -13,4 +13,12 @@
 	helper = 
 	helper = !/usr/bin/gh auth git-credential
 [commit]
-	template = /home/igor.psilva/.gittemplatecommit
+	template = /home/dpsigor/.gittemplatecommit
+
+[core]
+        autocrlf = input
+[init]
+        defaultBranch = main
+
+[url "ssh://git@github.com/"]
+        insteadOf = https://github.com/

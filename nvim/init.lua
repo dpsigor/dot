@@ -638,17 +638,6 @@ require('lazy').setup({
           end
           return 'make install_jsregexp'
         end)(),
-        dependencies = {
-          -- `friendly-snippets` contains a variety of premade snippets.
-          --    See the README about individual language/framework/plugin snippets:
-          --    https://github.com/rafamadriz/friendly-snippets
-          -- {
-          --   'rafamadriz/friendly-snippets',
-          --   config = function()
-          --     require('luasnip.loaders.from_vscode').lazy_load()
-          --   end,
-          -- },
-        },
         config = function()
           local ls = require 'luasnip'
           local s = ls.snippet
@@ -696,13 +685,17 @@ require('lazy').setup({
             }),
           })
 
-          ls.add_snippets('javascript', {
+          local jsSnippets = {
             s('cl', {
               t 'console.log(',
               i(1),
               t ')',
             }),
-          })
+          }
+
+          ls.add_snippets('javascript', jsSnippets)
+          ls.add_snippets('typescript', jsSnippets)
+          ls.add_snippets('typescriptreact', jsSnippets)
 
           vim.keymap.set('i', '<tab>', function()
             if ls.expand_or_jumpable() then

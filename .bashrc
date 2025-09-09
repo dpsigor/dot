@@ -72,7 +72,7 @@ fi
 alias ll='ls -alhF'
 alias la='ls -A'
 alias l='ls -CF'
-alias vim=vi
+alias vi=nvim
 
 alias alert='notify-send --urgency=low -i "$([ $? = 0 ] && echo terminal || echo error)" "$(history|tail -n1|sed -e '\''s/^\s*[0-9]\+\s*//;s/[;&|]\s*alert$//'\'')"'
 
@@ -152,6 +152,7 @@ export PATH=$PATH:~/go/bin
 export PATH=$PATH:~/zig
 export PATH="/home/dpsigor/.ebcli-virtual-env/executables:$PATH"
 export PATH="/home/dpsigor/.node-v16.11.1-linux-x64/bin:$PATH"
+export PATH="/opt/nvim-linux64/bin:$PATH"
 bind '"\t":menu-complete'
 export BUN_INSTALL="$HOME/.bun"
 export PATH=$BUN_INSTALL/bin:$PATH
