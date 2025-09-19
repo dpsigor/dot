@@ -10,3 +10,24 @@
 # test: adicionar testes, refatorar testes; sem mudança de código de produção
 #
 # https://github.com/stone-payments/stoneco-guidelines/tree/master/git-style
+#
+# Use a magic word + issue ID in the PR description or title (e.g. Fixes ENG-123
+# or Fixes https://linear.app/workspace/issue/ENG-123/title). If the issue is
+# unassigned when linking takes place, you will be added as the assignee of the
+# issue.
+#
+# Magic words
+#
+# Linear offers closing and non-closing magic words for you to customize your
+# workflow. When using a closing magic word, Linear will move the issue to In
+# Progress when the branch is pushed and Done when the commit is merged to the
+# default branch. When using a non-closing magic word, the linked PR or commit
+# will still move the issue through other statuses per Workflow settings, but
+# will not close the issue when the PR or commit merges.
+#
+# The closing magic words are: close, closes, closed, closing fix, fixes,
+# fixed, fixing, resolve, resolves, resolved, resolving, complete, completes,
+# completed, completing.
+#
+# The non-closing magic words are: ref, refs, references, part of, related to,
+# contributes to, toward, towards.
