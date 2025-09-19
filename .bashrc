@@ -62,7 +62,7 @@ unset color_prompt force_color_prompt
 
 # enable color support of ls and also add handy aliases
 if [ -x /usr/bin/dircolors ]; then
-    test -r ~/.config/ls/dircolors && eval "$(dircolors -b ~/.config/ls/dircolors)" || eval "$(dircolors -b)"
+    test -r ~/.dircolors && eval "$(dircolors -b ~/.dircolors)" || eval "$(dircolors -b)"
     alias ls='ls --color=auto'
     alias grep='grep --color=auto'
     alias fgrep='fgrep --color=auto'
@@ -103,63 +103,42 @@ if ! shopt -oq posix; then
   fi
 fi
 
-owncomp=(s01)
-for i in ${owncomp[@]}; do complete -C $i $i; done
+#owncomp=(s01)
+#for i in ${owncomp[@]}; do complete -C $i $i; done
 
 export GITUSER="$USER"
 export MAIN_REPOS_PATH="$HOME/repos/github.com/$GITUSER"
 export DOTFILES="$MAIN_REPOS_PATH/dot"
-export SCRIPTS="$DOTFILES/scripts"
-export EDITOR="/usr/bin/vim"
+# export SCRIPTS="$DOTFILES/scripts"
+# export EDITOR="/usr/bin/vim"
 export VISUAL=vim
 export PYTHONDONTWRITEBYTECODE=1
-export GOBIN=/usr/local/go/bin
+# export GOBIN=/usr/local/go/bin
 export LC_CTYPE="en_US.UTF-8"
 export LC_ALL="en_US.UTF-8"
-
-updateScripts() {
-  if [[ -d $SCRIPTS ]]; then
-    myscripts="$(ls $SCRIPTS)"
-    for myscript in $myscripts; do
-      if [ ! -f /usr/sbin/$myscript ]; then
-        sudo ln -s $SCRIPTS/$myscript  /usr/sbin/$myscript
-        echo "ln -s em /usr/sbin seu $myscript"
-      fi
-    done
-  fi
-}
-
-cdp() {
-  TEMP_PWD=`pwd`
-  while ! [[ -d .git ]]; do
-    [[ $HOME = `pwd` ]] && break
-    cd ..
-  done
-  OLDPWD=$TEMP_PWD
-}
-
-now() {
-  printf "\e[34m      \n"; date '+%H : %M : %S' | figlet -c; printf "\n\e[32m"; cal -A 1 -B 1; printf "\e[0m\n"
-}
+export LANG=en_US.UTF-8
 
 if [ -f ~/.config/.secrets/envsecrets ]; then
   . ~/.config/.secrets/envsecrets
 fi
 
-export PATH=$PATH:/usr/local/go/bin
+# export PATH=$PATH:/usr/local/go/bin
 export PATH=$PATH:~/.local/bin
-export PATH=$PATH:~/go/bin
-export PATH=$PATH:~/zig
-export PATH="/home/dpsigor/.ebcli-virtual-env/executables:$PATH"
-export PATH="/home/dpsigor/.node-v16.11.1-linux-x64/bin:$PATH"
-export PATH="/opt/nvim-linux64/bin:$PATH"
+# export PATH=$PATH:~/go/bin
+# export PATH=$PATH:~/zig
+# export PATH="/home/dpsigor/.ebcli-virtual-env/executables:$PATH"
+# export PATH="/home/dpsigor/.node-v16.11.1-linux-x64/bin:$PATH"
+# export PATH="/opt/nvim-linux64/bin:$PATH"
 bind '"\t":menu-complete'
-export BUN_INSTALL="$HOME/.bun"
-export PATH=$BUN_INSTALL/bin:$PATH
-export DENO_INSTALL="/home/dpsigor/.deno"
-export PATH="$DENO_INSTALL/bin:$PATH"
+# export BUN_INSTALL="$HOME/.bun"
+# export PATH=$BUN_INSTALL/bin:$PATH
+# export DENO_INSTALL="/home/dpsigor/.deno"
+# export PATH="$DENO_INSTALL/bin:$PATH"
 
 export CDPATH=".:$MAIN_REPOS_PATH"
+
+export DISCERN_REPOS_PATH="$HOME/repos/github.com/discernhq"
+export CDPATH=".:$DISCERN_REPOS_PATH"
 
 # Para disable ctrl+s e ctrl+q padrao do terminal
 stty -ixon
@@ -176,29 +155,12 @@ export PAGER="less"
 # export MANPAGER="sh -c 'col -bx | batcat -l man -p'"
 
 set -o vi
+bind 'set bell-style none'
 
-[ -f ~/.fzf.bash ] && source ~/.fzf.bash
+# [ -f ~/.fzf.bash ] && source ~/.fzf.bash
+# eval "$(fzf --bash)"
 
-function acrpurge {
-  registryName=$1
-  repositoryName=$2
-  timestamp=$3
-  timestampLen=${#timestamp}
-  [[ -z "$registryName" ]] && echo "usage: registryName repositoryName timestamp" && return || :
-  [[ -z "$repositoryName" ]] && echo "usage: registryName repositoryName timestamp" && return || :
-  [[ -z "$timestamp" ]] && echo "usage: registryName repositoryName timestamp" && return || :
-  [[ "$timestampLen" -ne 10 ]] && echo "invalid timestamp" && return || :
-  az acr manifest list-metadata --registry $registryName --name $repositoryName --query "[?createdTime < '$timestamp'].tags[]" | \
-  jq .[] | sed 's/"//g' | while read line; do
-    az acr manifest delete --registry $registryName --name $repositoryName:"$line" --yes;
-  done
-}
+# . "$HOME/.asdf/asdf.sh"
+# . "$HOME/.asdf/completions/asdf.bash"
 
-function acrlist {
-  [[ -z "$1" ]] && echo "usage: registryName repositoryName" && return || :
-  [[ -z "$2" ]] && echo "usage: registryName repositoryName" && return || :
-  az acr manifest list-metadata --registry $1 --name $2 --orderby time_asc --query "[].createdTime" | jq .[]
-}
-
-. "$HOME/.asdf/asdf.sh"
-. "$HOME/.asdf/completions/asdf.bash"
+[ -f ~/.config/.secrets/secrets.bash ] && source ~/.config/.secrets/secrets.bash
