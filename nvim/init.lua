@@ -306,13 +306,7 @@ require('lazy').setup({
       -- It's also possible to pass additional configuration options.
       --  See `:help telescope.builtin.live_grep()` for information about particular keys
       vim.keymap.set('n', '<C-s>', function()
-        builtin.grep_string {
-          -- grep_open_files = true,
-          prompt_title = 'Live Grep in Files',
-          shorten_path = true,
-          word_match = '-w',
-          search = '',
-        }
+        builtin.live_grep {}
       end, { desc = 'Search in Files' })
 
       vim.keymap.set('n', '<leader>fz', function()
@@ -518,7 +512,7 @@ require('lazy').setup({
               parameterNames = true,
               rangeVariableTypes = true,
             },
-            gofumpt = true,
+            -- gofumpt = true,
             semanticTokens = true,
           },
         },
@@ -596,9 +590,6 @@ require('lazy').setup({
     opts = {
       notify_on_error = false,
       format_on_save = function(bufnr)
-        -- Disable "format_on_save lsp_fallback" for languages that don't
-        -- have a well standardized coding style. You can add additional
-        -- languages here or re-enable it for the disabled ones.
         local disable_filetypes = { c = true, cpp = true }
         return {
           timeout_ms = 500,
@@ -999,8 +990,8 @@ vim.keymap.set('n', 'n', 'nzz')
 vim.keymap.set('n', 'N', 'Nzz')
 
 -- quickfix list
-vim.keymap.set('n', '<leader>j', ':cnext<CR>', { silent = true, noremap = true })
-vim.keymap.set('n', '<leader>k', ':cprev<CR>', { silent = true, noremap = true })
+vim.keymap.set('n', '<leader>j', ':cnext<CR>zz', { silent = true, noremap = true })
+vim.keymap.set('n', '<leader>k', ':cprev<CR>zz', { silent = true, noremap = true })
 
 -- moving vertically on wrapped lines
 vim.keymap.set('n', 'j', 'gj', { silent = true, noremap = true })
