@@ -49,7 +49,7 @@ __PS1_BUILD() {
   local Yel='\[\e[0;33m\]'
   local Blu='\[\e[0;34m\]'
   local __PS1_LOCATION="${Yel}\A${Blu}:${Gre}\w${RCol}"
-  local __PS1_GIT_STATUS=$([[ $(git status -s 2>/dev/null | wc -l) != 0 ]] && echo -en " \e[1;33;44m" || echo -en " \e[39;44m")
+  local __PS1_GIT_STATUS=$([[ $(($(git status -s 2>/dev/null | wc -l))) != 0 ]] && echo -en " \e[1;33;44m" || echo -en " \e[39;44m")
   local __PS1_GIT_BRANCH=$(git branch 2>/dev/null | grep \* | { read tmpv; [[ -n $tmpv ]] && echo " ${tmpv##* } \e[0m" || echo "\e[0m"; })
   local __PS1_AFTER="†"
   PS1+="$__PS1_LOCATION$__PS1_GIT_STATUS$__PS1_GIT_BRANCH"
@@ -69,6 +69,8 @@ if [ -x /usr/bin/dircolors ]; then
     alias egrep='egrep --color=auto'
 fi
 
+export CLICOLOR=1
+
 alias ll='ls -alhF'
 alias la='ls -A'
 alias l='ls -CF'
@@ -77,8 +79,6 @@ alias vi=nvim
 alias alert='notify-send --urgency=low -i "$([ $? = 0 ] && echo terminal || echo error)" "$(history|tail -n1|sed -e '\''s/^\s*[0-9]\+\s*//;s/[;&|]\s*alert$//'\'')"'
 
 alias c=clear
-alias b=batcat
-alias ?=ddgr
 alias top=htop
 alias k=kubectl
 complete -F __start_kubectl k
@@ -100,6 +100,11 @@ if ! shopt -oq posix; then
     . /usr/share/bash-completion/bash_completion
   elif [ -f /etc/bash_completion ]; then
     . /etc/bash_completion
+  elif [ -f /opt/homebrew/etc/profile.d/bash_completion.sh ]; then
+    . /opt/homebrew/etc/profile.d/bash_completion.sh
+  fi
+  if [ -f /Library/Developer/CommandLineTools/usr/share/git-core/git-completion.bash ]; then
+    . /Library/Developer/CommandLineTools/usr/share/git-core/git-completion.bash
   fi
 fi
 
@@ -123,22 +128,19 @@ if [ -f ~/.config/.secrets/envsecrets ]; then
 fi
 
 # export PATH=$PATH:/usr/local/go/bin
-export PATH=$PATH:~/.local/bin
+export PATH=~/.local/bin:$PATH
 # export PATH=$PATH:~/go/bin
-# export PATH=$PATH:~/zig
-# export PATH="/home/dpsigor/.ebcli-virtual-env/executables:$PATH"
-# export PATH="/home/dpsigor/.node-v16.11.1-linux-x64/bin:$PATH"
-# export PATH="/opt/nvim-linux64/bin:$PATH"
+export PATH="/opt/nvim-macos-arm64/bin:$PATH"
+export PATH="/opt/homebrew/opt/libpq/bin:$PATH"
+# export PATH="/opt/homebrew/opt/coreutils/libexec/gnubin:$PATH" # does not have column, nor grep
+export PATH="/opt/homebrew/opt/util-linux/bin:$PATH"
+export PATH="/opt/homebrew/opt/util-linux/sbin:$PATH"
 bind '"\t":menu-complete'
-# export BUN_INSTALL="$HOME/.bun"
-# export PATH=$BUN_INSTALL/bin:$PATH
-# export DENO_INSTALL="/home/dpsigor/.deno"
-# export PATH="$DENO_INSTALL/bin:$PATH"
 
 export CDPATH=".:$MAIN_REPOS_PATH"
 
 export DISCERN_REPOS_PATH="$HOME/repos/github.com/discernhq"
-export CDPATH=".:$DISCERN_REPOS_PATH"
+export CDPATH="$CDPATH:$DISCERN_REPOS_PATH"
 
 # Para disable ctrl+s e ctrl+q padrao do terminal
 stty -ixon
@@ -157,10 +159,51 @@ export PAGER="less"
 set -o vi
 bind 'set bell-style none'
 
-# [ -f ~/.fzf.bash ] && source ~/.fzf.bash
-# eval "$(fzf --bash)"
+eval "$(fzf --bash)"
 
 # . "$HOME/.asdf/asdf.sh"
 # . "$HOME/.asdf/completions/asdf.bash"
 
 [ -f ~/.config/.secrets/secrets.bash ] && source ~/.config/.secrets/secrets.bash
+
+export RIPGREP_CONFIG_PATH="$HOME/.ripgreprc"
+
+function bbr {
+  but status --json | jq -r '.stacks[].branches[] | "\u001b[0m\u001b[1m\(.cliId) \u001b[0m\u001b[36m\(.name)"'
+}
+
+function bpr {
+  if [[ ! $1 =~ ^[a-zA-Z]{2}$ ]]; then
+    echo "Usage: bpr <branch-cliId>"
+    return 1
+  fi
+  but pr new "$1"
+}
+
+function bshow {
+  if [[ ! $1 =~ ^[a-zA-Z]{2}$ ]]; then
+    echo "Usage: bshow <branch-cliId>"
+    return 1
+  fi
+  but show "$1" --json | jq -r '.commits[].files[] | select(.status != "deleted") | .path' | sort -u
+}
+
+function bstat {
+  if [[ ! $1 =~ ^[a-zA-Z]{2}$ ]]; then
+    echo "Usage: bstat <branch-cliId>"
+    return 1
+  fi
+  but show "$1" --json | jq -r '.commits[] | "\u001b[1;34m\(.files_changed)f\u001b[0m  \u001b[1;32m+\(.insertions)\u001b[0m  \u001b[1;31m-\(.deletions)\u001b[0m  \(.message)"'
+}
+
+function b {
+  but tui
+}
+
+function npxprettier {
+  if [[ ! $1 =~ ^[a-zA-Z]{2}$ ]]; then
+    echo "Usage: npxprettier <branch-cliId>"
+    return 1
+  fi
+  bshow "$1" | grep -v '\.go$' | xargs npx prettier -w
+}

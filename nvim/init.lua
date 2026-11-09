@@ -76,9 +76,17 @@ vim.opt.scrolloff = 10
 vim.opt.hlsearch = true
 vim.keymap.set('n', '<Esc>', '<cmd>nohlsearch<CR>')
 
+-- -- Diagnostic keymaps
+-- vim.keymap.set('n', '[d', vim.diagnostic.goto_prev, { desc = 'Go to previous [D]iagnostic message' })
+-- vim.keymap.set('n', ']d', vim.diagnostic.goto_next, { desc = 'Go to next [D]iagnostic message' })
+
 -- Diagnostic keymaps
-vim.keymap.set('n', '[d', vim.diagnostic.goto_prev, { desc = 'Go to previous [D]iagnostic message' })
-vim.keymap.set('n', ']d', vim.diagnostic.goto_next, { desc = 'Go to next [D]iagnostic message' })
+vim.keymap.set('n', '[d', function()
+  vim.diagnostic.jump { count = -1, float = true }
+end, { desc = 'Go to previous [D]iagnostic message' })
+vim.keymap.set('n', ']d', function()
+  vim.diagnostic.jump { count = 1, float = true }
+end, { desc = 'Go to next [D]iagnostic message' })
 
 -- Keybinds to prevent accidental movement
 
@@ -253,6 +261,10 @@ require('lazy').setup({
         --  All the info you're looking for is in `:help telescope.setup()`
         --
         defaults = {
+          layout_strategy = 'vertical',
+          layout_config = {
+            vertical = { width = 0.95, height = 0.95 },
+          },
           mappings = {
             i = {
               ['<c-k>'] = 'move_selection_previous',
@@ -451,6 +463,10 @@ require('lazy').setup({
                 vim.api.nvim_clear_autocmds { group = 'kickstart-lsp-highlight', buffer = event2.buf }
               end,
             })
+
+            if client.name == 'gopls' then
+              client.server_capabilities.semanticTokensProvider = nil
+            end
           end
 
           -- The following autocommand is used to enable inlay hints in your
@@ -485,6 +501,7 @@ require('lazy').setup({
         -- clangd = {},
         gopls = {
           settings = {
+            staticcheck = true,
             analyses = {
               fieldalignment = false, -- find structs that would use less memory if their fields were sorted
               nilness = true,
@@ -524,7 +541,9 @@ require('lazy').setup({
         --    https://github.com/pmizio/typescript-tools.nvim
         --
         -- But for many setups, the LSP (`tsserver`) will work just fine
-        -- tsserver = {},
+        -- tsserver = {
+        --   cmd = { 'typescript-language-server', '--stdio' },
+        -- },
         --
 
         lua_ls = {
@@ -601,7 +620,7 @@ require('lazy').setup({
         go = {
           'gofumpt',
           'goimports',
-          -- 'goimports-reviser'
+          -- 'goimports-reviser',
         },
         -- Conform can also run multiple formatters sequentially
         -- python = { "isort", "black" },
@@ -662,12 +681,7 @@ require('lazy').setup({
               t '")',
             }),
             s({ trig = 'err', descr = '(errwr) "Error handling with fmt.Errorf"', priority = -1000 }, {
-              t 'if ',
-              t { 'err != nil {', '' },
-              t '\treturn fmt.Errorf("',
-              i(0),
-              t { ': %w", err)', '' },
-              t '}',
+              t { 'if err != nil {', '\treturn', '}' },
             }),
             s('fjson', {
               t 'enc := json.NewEncoder(os.Stdout); enc.SetIndent("", " "); enc.Encode(',
@@ -812,44 +826,75 @@ require('lazy').setup({
       --  Check out: https://github.com/echasnovski/mini.nvim
     end,
   },
+  {
+    'nvim-treesitter/nvim-treesitter-context',
+    event = 'BufReadPre',
+    opts = { max_lines = 3 },
+  },
   { -- Highlight, edit, and navigate code
     'nvim-treesitter/nvim-treesitter',
     build = ':TSUpdate',
     dependencies = {
-      {
-        'nvim-treesitter/nvim-treesitter-textobjects',
-      },
+      'nvim-treesitter/nvim-treesitter-textobjects',
     },
     opts = {
-      ensure_installed = { 'bash', 'c', 'diff', 'html', 'lua', 'luadoc', 'markdown', 'vim', 'vimdoc', 'go' },
-      -- Autoinstall languages that are not installed
+      ensure_installed = {
+        'bash',
+        'c',
+        'diff',
+        'html',
+        'lua',
+        'luadoc',
+        'markdown',
+        'vim',
+        'vimdoc',
+        -- Go ecosystem
+        'go',
+        'gomod',
+        'gowork',
+        'gotmpl',
+        'json',
+        'yaml',
+      },
       auto_install = true,
       highlight = {
         enable = true,
-        -- Some languages depend on vim's regex highlighting system (such as Ruby) for indent rules.
-        --  If you are experiencing weird indenting issues, add the language to
-        --  the list of additional_vim_regex_highlighting and disabled languages for indent.
         additional_vim_regex_highlighting = { 'ruby' },
       },
       indent = { enable = true, disable = { 'ruby' } },
+
+      -- Expand visual selection based on Treesitter AST
+      incremental_selection = {
+        enable = true,
+        keymaps = {
+          init_selection = '<c-space>',
+          node_incremental = '<c-space>',
+          scope_incremental = '<c-s>',
+          node_decremental = '<M-space>',
+        },
+      },
+
       textobjects = {
         select = {
           enable = true,
           lookahead = true,
           keymaps = {
-            -- You can use the capture groups defined in textobjects.scm
-            ['af'] = '@function.outer',
-            ['if'] = '@function.inner',
+            -- Functions
+            ['af'] = { query = '@function.outer', desc = 'Around function' },
+            ['if'] = { query = '@function.inner', desc = 'Inside function' },
+            -- Structs & Interfaces (mapped to @class in TS grammar)
+            ['ac'] = { query = '@class.outer', desc = 'Around struct/interface' },
+            ['ic'] = { query = '@class.inner', desc = 'Inside struct/interface' },
+            -- Function parameters / arguments
+            ['aa'] = { query = '@parameter.outer', desc = 'Around parameter' },
+            ['ia'] = { query = '@parameter.inner', desc = 'Inside parameter' },
+            -- Conditionals (great for `if err != nil`)
+            ['ai'] = { query = '@conditional.outer', desc = 'Around conditional' },
+            ['ii'] = { query = '@conditional.inner', desc = 'Inside conditional' },
+            -- Loops
+            ['al'] = { query = '@loop.outer', desc = 'Around loop' },
+            ['il'] = { query = '@loop.inner', desc = 'Inside loop' },
           },
-          -- If you set this to `true` (default is `false`) then any textobject is
-          -- extended to include preceding or succeeding whitespace. Succeeding
-          -- whitespace has priority in order to act similarly to eg the built-in
-          -- `ap`.
-          --
-          -- Can also be a function which gets passed a table with the keys
-          -- * query_string: eg '@function.inner'
-          -- * selection_mode: eg 'v'
-          -- and should return true or false
           include_surrounding_whitespace = true,
         },
         move = {
@@ -858,30 +903,30 @@ require('lazy').setup({
           goto_next_start = {
             [']]'] = { query = '@function.outer', desc = 'Next function start' },
           },
+          goto_next_end = {
+            [']['] = { query = '@function.outer', desc = 'Next function end' },
+            [']M'] = { query = '@class.outer', desc = 'Next struct/interface end' },
+          },
           goto_previous_start = {
-            ['[['] = { query = '@function.outer', desc = 'Previous funtion start' },
+            ['[['] = { query = '@function.outer', desc = 'Previous function start' },
+          },
+        },
+        swap = {
+          enable = true,
+          swap_next = {
+            ['<leader>a'] = { query = '@parameter.inner', desc = 'Swap parameter with next' },
+          },
+          swap_previous = {
+            ['<leader>A'] = { query = '@parameter.inner', desc = 'Swap parameter with previous' },
           },
         },
       },
     },
     config = function(_, opts)
-      -- [[ Configure Treesitter ]] See `:help nvim-treesitter`
-
-      -- Prefer git instead of curl in order to improve connectivity in some environments
       require('nvim-treesitter.install').prefer_git = true
-      ---@diagnostic disable-next-line: missing-fields
-
       require('nvim-treesitter.configs').setup(opts)
-
-      -- There are additional nvim-treesitter modules that you can use to interact
-      -- with nvim-treesitter. You should go explore a few and see what interests you:
-      --
-      --    - Incremental selection: Included, see `:help nvim-treesitter-incremental-selection-mod`
-      --    - Show your current context: https://github.com/nvim-treesitter/nvim-treesitter-context
-      --    - Treesitter + textobjects: https://github.com/nvim-treesitter/nvim-treesitter-textobjects
     end,
   },
-
   -- The following two comments only work if you have downloaded the kickstart repo, not just copy pasted the
   -- init.lua. If you want these files, they are in the repository, so you can just download them and
   -- place them in the correct locations.
@@ -893,7 +938,7 @@ require('lazy').setup({
   --
   -- require 'kickstart.plugins.debug',
   -- require 'kickstart.plugins.indent_line',
-  -- require 'kickstart.plugins.lint',
+  require 'kickstart.plugins.lint',
   require 'kickstart.plugins.autopairs',
   -- require 'kickstart.plugins.neo-tree',
   require 'kickstart.plugins.gitsigns', -- adds gitsigns recommend keymaps
@@ -1012,3 +1057,16 @@ vim.keymap.set('n', '<leader>cm', function()
   branch = branch:gsub('-', ' ')
   vim.api.nvim_put({ branch }, 'c', true, true)
 end, { desc = 'Inserts the branch name, changing some characters' })
+
+local function run_to_qf(cmd)
+  -- Run command and split lines into an array
+  local output = vim.fn.systemlist(cmd)
+  -- Populate the quickfix list (title is optional but useful)
+  vim.fn.setqflist({}, 'r', { title = cmd, lines = output })
+  -- Open the quickfix window
+  vim.cmd 'copen'
+end
+
+vim.keymap.set('n', '<leader>tsc', function()
+  run_to_qf "npx tsc --noEmit --pretty false 2>&1 | sed -E 's/^(.*\\.tsx)\\(([0-9]+),([0-9]+)\\): (error|warning) (TS[0-9]+): (.*)$/\\1:\\2:\\3: \\5 (\\4 \\5)/'"
+end, { desc = 'Run tsc to Quickfix' })

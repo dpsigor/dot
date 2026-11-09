@@ -7,6 +7,29 @@ return {
       local lint = require 'lint'
       lint.linters_by_ft = {
         markdown = { 'markdownlint' },
+        go = { 'golangcilint' },
+      }
+      lint.linters.golangcilint.args = {
+        'run',
+        '--config',
+        '/Users/dpsigor/.config/.secrets/.golangci.yml',
+        '--output.json.path=stdout',
+        -- Overwrite values possibly set in .golangci.yml
+        '--output.text.path=',
+        '--output.tab.path=',
+        '--output.html.path=',
+        '--output.checkstyle.path=',
+        '--output.code-climate.path=',
+        '--output.junit-xml.path=',
+        '--output.teamcity.path=',
+        '--output.sarif.path=',
+        '--issues-exit-code=0',
+        '--show-stats=false',
+        '--path-mode',
+        'abs',
+        function()
+          return vim.fn.fnamemodify(vim.api.nvim_buf_get_name(0), ':h')
+        end,
       }
 
       -- To allow other plugins to add linters to require('lint').linters_by_ft,

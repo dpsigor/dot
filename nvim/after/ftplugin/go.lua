@@ -1,5 +1,7 @@
 -- Golang specific settings
 
+vim.keymap.set('n', '<leader>l', ":cex system('go vet ./...')<CR>", { silent = true, noremap = true })
+
 -- Filter test case by name
 vim.keymap.set('n', '<leader>tf', function()
   local current_line = vim.api.nvim_get_current_line()

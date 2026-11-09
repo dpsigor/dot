@@ -13,7 +13,7 @@
 	helper = 
 	helper = !/usr/bin/gh auth git-credential
 [commit]
-	template = /home/dpsigor/.gittemplatecommit
+	template = ~/.gittemplatecommit
 
 [core]
         autocrlf = input
